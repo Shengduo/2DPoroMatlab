@@ -83,6 +83,7 @@ files = ["Original_gamma_0_pflag_3_c_4e-08", ...
 saveflag = 1;
 files = files([3, 7, 43]);
 for iiii = 1:1:files.length()
+    % files(iiii) = strcat('../outputMats/', files(iiii));
     % stacy_contours(files(iiii), saveflag, 0, 1);
     stacy_contours_undim(files(iiii), saveflag, 0, 1);
     close all;

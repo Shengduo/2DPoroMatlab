@@ -1007,28 +1007,28 @@ function Regularized_cluster(Nuu, Gamma, cc, FHFlag)
     % t1 = cputime - t0;
     t1 = toc(tstart);
     disp('Finished');
-    save(filename);
+    save(strcat('../outputMats/', filename));
     
-    % Write changable parameters into a '.txt' file
-    txtname = strcat('FH_', num2str(FHFlag), '_nuu_', num2str(nuu), '_gamma_', num2str(gamma),...
-                     '_pflag_', num2str(poreflag),'_c_', num2str(c), '.txt');
-    
-    fileID = fopen(txtname, 'w');
-    
-    fprintf(fileID, '%25s', 'Filename: '); fprintf(fileID, filename);
-    fprintf(fileID, '\n%25s', 'NT: '); fprintf(fileID, num2str(NT));
-    fprintf(fileID, '\n%25s', 'lhs, rhs: '); 
-    fprintf(fileID, strcat(num2str(lhs), ', ', num2str(rhs))); 
-    fprintf(fileID, '\n%25s', 'Gamma: '); fprintf(fileID, num2str(gamma));
-    fprintf(fileID, '\n%25s', 'a, b: '); 
-    fprintf(fileID, strcat(num2str(a(1)), ', ', num2str(b(1)))); 
-    fprintf(fileID, '\n%25s', 'Terminated Slip rate: '); fprintf(fileID, num2str(Terminating_slip_rate));
-    fprintf(fileID, '\n%25s', 'Total Wallclock Time (min): '); fprintf(fileID, num2str(t1/60));
-    fprintf(fileID, '\n%25s', 'Number of iterations:'); fprintf(fileID, num2str(it));
-    fprintf(fileID, '\n%25s', 'kappac:'); fprintf(fileID, num2str(kappac));
-    fprintf(fileID, '\n%25s', 'kappacx:'); fprintf(fileID, num2str(kappacx));
-    fprintf(fileID, '\n%25s', 'c:'); fprintf(fileID, num2str(c));
-    fclose(fileID);
+%     % Write changable parameters into a '.txt' file
+%     txtname = strcat('FH_', num2str(FHFlag), '_nuu_', num2str(nuu), '_gamma_', num2str(gamma),...
+%                      '_pflag_', num2str(poreflag),'_c_', num2str(c), '.txt');
+%     
+%     fileID = fopen(txtname, 'w');
+%     
+%     fprintf(fileID, '%25s', 'Filename: '); fprintf(fileID, filename);
+%     fprintf(fileID, '\n%25s', 'NT: '); fprintf(fileID, num2str(NT));
+%     fprintf(fileID, '\n%25s', 'lhs, rhs: '); 
+%     fprintf(fileID, strcat(num2str(lhs), ', ', num2str(rhs))); 
+%     fprintf(fileID, '\n%25s', 'Gamma: '); fprintf(fileID, num2str(gamma));
+%     fprintf(fileID, '\n%25s', 'a, b: '); 
+%     fprintf(fileID, strcat(num2str(a(1)), ', ', num2str(b(1)))); 
+%     fprintf(fileID, '\n%25s', 'Terminated Slip rate: '); fprintf(fileID, num2str(Terminating_slip_rate));
+%     fprintf(fileID, '\n%25s', 'Total Wallclock Time (min): '); fprintf(fileID, num2str(t1/60));
+%     fprintf(fileID, '\n%25s', 'Number of iterations:'); fprintf(fileID, num2str(it));
+%     fprintf(fileID, '\n%25s', 'kappac:'); fprintf(fileID, num2str(kappac));
+%     fprintf(fileID, '\n%25s', 'kappacx:'); fprintf(fileID, num2str(kappacx));
+%     fprintf(fileID, '\n%25s', 'c:'); fprintf(fileID, num2str(c));
+%     fclose(fileID);
     
 
 end

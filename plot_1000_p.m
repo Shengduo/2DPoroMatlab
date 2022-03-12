@@ -3,7 +3,7 @@ close all;
 
 % load .mat file
 filename = 'Reduced_gamma_0_pflag_3_c_4e-08.mat';
-load(filename);
+load(strcat('../outputMats', filename));
 
 ind = find((tsaveplot > 1000 & tsaveplot < 1400));
 figure(1);

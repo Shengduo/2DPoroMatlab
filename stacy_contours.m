@@ -7,7 +7,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     %prename = 'Original_gamma_0_pflag_3_c_4e-08';
     %gamma = 1.7e-4;
     %Vr = 1.0e-6;
-    filename = strcat(prename, '.mat');
+    filename = strcat('../outputMats/', prename, '.mat');
     load(filename, 'pcsave', 'psave', 'thetasave', 'x', 'tsaveplot', ...
         'Vsave', 'dphi0', 'gamma', 'Vr', 'L', 'dsave');
     fontsize = 24;
@@ -396,27 +396,27 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     if subtraction_flag == 0
         if saveflag == 1
             if pcflag == 1
-                savename = strcat(pwd, '/plots/', prename, '_PcVcontour_long.png');
+                savename = strcat(pwd, '../plots/', prename, '_PcVcontour_long.png');
                 disp(savename);
                 % saveas(figure(1),savename);
                 print('-painters', '-dsvg' ,savename);
                 
-                savename = strcat(pwd, '/plots/', prename, '_mVPhicontour_long.png');
+                savename = strcat(pwd, '../plots/', prename, '_mVPhicontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print('-painters', '-dsvg' ,savename);
                 
-                savename = strcat(pwd, '/plots/', prename, '_VSlipcontour_long.png');
+                savename = strcat(pwd, '../plots/', prename, '_VSlipcontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print('-painters', '-dsvg' ,savename);
             else
-                savename = strcat(pwd, '/plots/', prename, '_PmVcontour_long.png');
+                savename = strcat(pwd, '../plots/', prename, '_PmVcontour_long.png');
                 disp(savename);
                 % saveas(figure(1),savename);
                 print('-painters', '-dsvg' ,savename);
                 
-                savename = strcat(pwd, '/plots/', prename, '_mVPhicontour_long.png');
+                savename = strcat(pwd, '../plots/', prename, '_mVPhicontour_long.png');
                 disp(savename);
                 print('-painters', '-dsvg' ,savename);
                 % saveas(figure(2),savename);
@@ -425,32 +425,32 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     else
         if saveflag == 1
             if pcflag == 1
-                savename = strcat(pwd, '/dsvg_plots1/', prename, '_PcVcontour_long.png');
+                savename = strcat(pwd, '../dsvg_plots1/', prename, '_PcVcontour_long.png');
                 disp(savename);
                 % saveas(figure(1),savename);
                 print(figure(1) ,savename, '-dpng', '-r350');
                 
-                savename = strcat(pwd, '/dsvg_plots1/', prename, '_mVPhicontour_long.png');
+                savename = strcat(pwd, '../dsvg_plots1/', prename, '_mVPhicontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print(figure(2) ,savename, '-dpng', '-r350');
                 
-                savename = strcat(pwd, '/dsvg_plots1/', prename, '_VSlipcontour_long.png');
+                savename = strcat(pwd, '../dsvg_plots1/', prename, '_VSlipcontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print(figure(3) ,savename, '-dpng', '-r350');
             else
-                savename = strcat(pwd, '/dsvg_plots1/', prename, '_PmVcontour_long.png');
+                savename = strcat(pwd, '../dsvg_plots1/', prename, '_PmVcontour_long.png');
                 disp(savename);
                 % saveas(figure(1),savename);
                 print(figure(1) ,savename, '-dpng', '-r500');
                 
-                savename = strcat(pwd, '/dsvg_plots1/', prename, '_mVPhicontour_long.png');
+                savename = strcat(pwd, '../dsvg_plots1/', prename, '_mVPhicontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print(figure(2) ,savename, '-dpng', '-r500');
                 
-                savename = strcat(pwd, '/dsvg_plots1/', prename, '_VSlipcontour_long.png');
+                savename = strcat(pwd, '../dsvg_plots1/', prename, '_VSlipcontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print(figure(3) ,savename, '-dpng', '-r500');

@@ -3,7 +3,7 @@ close all;
 G = 1.0e10;
 Objectname = 'Reduced_gamma_0_pflag_3_c_4e-07';
 % load .mat file
-filename = strcat(Objectname, '.mat');
+filename = strcat('../outputMats', Objectname, '.mat');
 videoname = strcat(Objectname, '.avi');
 
 % Initialize video

@@ -1,6 +1,6 @@
 function center_VPres(prename, saveflag)
 
-    filename = strcat(prename, '.mat');
+    filename = strcat('../outputMats/', prename, '.mat');
     load(filename, 'pcsave', 'psave', 'sigrsave', 'tsaveplot', ...
         'Vsave', 'G', 'si0', 'L', 'Vr');
     fontsize = 24;
@@ -22,7 +22,7 @@ function center_VPres(prename, saveflag)
     
     % Save the figure
     if saveflag == 1
-        savename = strcat(pwd, '/plots/', prename, '_centerV.png');
+        savename = strcat(pwd, '../plots/', prename, '_centerV.png');
         disp(savename);
         print(figure(1) ,savename, '-dpng', '-r350');
     end
@@ -41,7 +41,7 @@ function center_VPres(prename, saveflag)
     
     % Save the figure
     if saveflag == 1
-        savename = strcat(pwd, '/plots/', prename, '_centerP.png');
+        savename = strcat(pwd, '../plots/', prename, '_centerP.png');
         disp(savename);
         print(figure(2) ,savename, '-dpng', '-r350');
     end

@@ -4,11 +4,11 @@ G = 1.0e10;
 Objectname = 'Reduced_gamma_0_pflag_3_c_4e-07';
 
 % Initialize names
-filename = strcat(Objectname, '.mat');
+filename = strcat('../outputMats/', Objectname, '.mat');
 videoname = strcat(Objectname, '_P.mp4');
 
 % Initialize video
-myVideo = VideoWriter(strcat('mp4files/', videoname), 'MPEG-4');
+myVideo = VideoWriter(strcat('../mp4files/', videoname), 'MPEG-4');
 myVideo.FrameRate = 15;
 myVideo.Quality = 100;
 open(myVideo);

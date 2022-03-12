@@ -7,7 +7,7 @@ function stacy_contours_undim(prename, saveflag, pcflag, subtraction_flag)
     %prename = 'Original_gamma_0_pflag_3_c_4e-08';
     %gamma = 1.7e-4;
     %Vr = 1.0e-6;
-    filename = strcat(prename, '.mat');
+    filename = strcat('../outputMats/', prename, '.mat');
     load(filename, 'G', 'si0', 'a', 'b', 'pcsave', 'psave', 'thetasave', 'x', 'tsaveplot', ...
         'Vsave', 'dphi0', 'gamma', 'Vr', 'L', 'dsave');
     fontsize = 24;
@@ -431,7 +431,7 @@ function stacy_contours_undim(prename, saveflag, pcflag, subtraction_flag)
     else
         if saveflag == 1
             if pcflag == 1
-                savename = strcat(pwd, '/dsvg_plots_nodim1/', prename, '_PcVcontour_long.png');
+                savename = strcat(pwd, '../dsvg_plots_nodim1/', prename, '_PcVcontour_long.png');
                 disp(savename);
                 % saveas(figure(1),savename);
                 print(figure(1) ,savename, '-dpng', '-r350');
@@ -446,7 +446,7 @@ function stacy_contours_undim(prename, saveflag, pcflag, subtraction_flag)
 %                 % saveas(figure(2),savename);
 %                 print(figure(3) ,savename, '-dpng', '-r350');
             else
-                savename = strcat(pwd, '/dsvg_plots_nodim1/', prename, '_PmVcontour_long.png');
+                savename = strcat(pwd, '/../dsvg_plots_nodim1/', prename, '_PmVcontour_long.png');
                 disp(savename);
                 % saveas(figure(1),savename);
                 print(figure(1) ,savename, '-dpng', '-r500');
