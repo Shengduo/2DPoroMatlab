@@ -11,6 +11,8 @@ function stacy_contours_undim(prename, saveflag, pcflag, subtraction_flag)
     load(filename, 'G', 'si0', 'a', 'b', 'pcsave', 'psave', 'thetasave', 'x', 'tsaveplot', ...
         'Vsave', 'dphi0', 'gamma', 'Vr', 'L', 'dsave');
     fontsize = 24;
+    V_dyn = 1;
+    
     % Xrange
     Xrange = [-6, 6];
     xticks = 0:2:4;
@@ -133,7 +135,7 @@ function stacy_contours_undim(prename, saveflag, pcflag, subtraction_flag)
     % r_press_0_5 = r_press_0_5(ind);
 
     axes(ha(2));
-    V_log=log10(V);
+    V_log=log10(V ./ V_dyn);
     [X, Y] = meshgrid(time,x);
     h=pcolor(X ./ t_, Y ./ L_nu, V_log);
     shading interp;
@@ -160,7 +162,7 @@ function stacy_contours_undim(prename, saveflag, pcflag, subtraction_flag)
     c=colorbar;
     set(c,'LineWidth',1);
     caxis([-13 1]);
-    ylabel(c,'Log Slip Rate [m/s]','FontName','Avenir','FontSize',fontsize, 'interpreter', 'latex');
+    ylabel(c,'$\log(V/V_{dyn})$','FontName','Avenir','FontSize',fontsize, 'interpreter', 'latex');
     set(gca, 'TickLength', [.01 .01],...
     'TickDir','in',...
     'XMinorTick', 'on','YMinorTick', 'on','FontName',...

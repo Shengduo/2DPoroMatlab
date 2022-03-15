@@ -9,6 +9,7 @@ function center_VPres_nodim(prename, saveflag)
     % Xrange = [-50, 50];
     % Non-dimensionalize fault length
     L_nu = G * L / (b(1) - a(1)) / si0;
+    V_dyn = 1;
     % L_nu = 1;
 
 
@@ -25,7 +26,7 @@ function center_VPres_nodim(prename, saveflag)
     xlim(Trange);
     ylim(Vrange);
     xlabel('$t / t_{nu}$', 'interpreter', 'latex');
-    ylabel('V [m/s]', 'interpreter', 'latex');
+    ylabel('$\log(V/V_{dyn})$', 'interpreter', 'latex');
     set(gca, 'Fontsize', fontsize);
     
     % Save the figure

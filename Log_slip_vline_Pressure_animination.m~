@@ -2,8 +2,8 @@ clc,clear;
 close all;
 G = 1.0e10;
 % Objectname = 'FH_0_nuu_0.3_gamma_0_pflag_3_c_4e-07';
-Objectname = 'Original_gamma_0_pflag_3_c_4e-07';
-% Objectname = 'Reduced_gamma_0_pflag_3_c_4e-07';
+% Objectname = 'Original_gamma_0_pflag_3_c_4e-07';
+Objectname = 'Reduced_gamma_0_pflag_3_c_4e-07';
 V_dyn = 1;
 
 % Initialize names
@@ -95,12 +95,11 @@ caxis(crange);
 ylim(Trange);
 xlim(Xrange);
 c=colorbar;
-ylabel('$t / t_{nu}$', 'interpreter', 'latex'); xlabel('$X / L_{nu}$', 'interpreter', 'latex'); 
-title('Evolution of Log Slip Rate $\log(V/V_{dyn})$' , 'interpreter', 'latex')
+ylabel('$t / t_{nu}$', 'interpreter', 'latex'); xlabel('$X / L_{nu}$', 'interpreter', 'latex'); title('Evolution of Log Slip Rate $V$ [m/s]' , 'interpreter', 'latex')
 set(gca, 'FontSize', 20);
 
 set(c,'LineWidth',1);
-ylabel(c,'$\log(V/V_{dyn})$','FontName','Avenir','FontSize',fontsize, 'interpreter', 'latex');
+ylabel(c,'$log(V/V_{dyn})$','FontName','Avenir','FontSize',fontsize, 'interpreter', 'latex');
 set(gca, 'TickLength', [.01 .01],...
 'TickDir','in',...
 'XMinorTick', 'on','YMinorTick', 'on','FontName',...
