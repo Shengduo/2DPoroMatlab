@@ -81,14 +81,15 @@ files = ["Original_gamma_0_pflag_3_c_4e-08", ...
     "FH_0_nuu_0.262_gamma_1.7e-05_pflag_3_c_4e-08_factor_1", ...         % 79
     "FH_0_nuu_0.35_gamma_0_pflag_3_c_4e-07_factor_8"];            % 80
 saveflag = 1;
-files = files([3, 7, 43]);
+files = files(68:79);
 for iiii = 1:1:files.length()
     % files(iiii) = strcat('../outputMats/', files(iiii));
-    % stacy_contours(files(iiii), saveflag, 0, 1);
-    stacy_contours_undim(files(iiii), saveflag, 0, 1);
+    stacy_contours(files(iiii), saveflag, 0, 1);
+    % stacy_contours_undim(files(iiii), saveflag, 0, 1);
+    % PlotLeaking(files(iiii));
     close all;
-    center_VPres_nodim(files(iiii), saveflag);
-    close all;
+    % center_VPres_nodim(files(iiii), saveflag);
+    % close all;
     % stacy_contours(files(iiii), saveflag, 1, 1);
     % close all;
 end
