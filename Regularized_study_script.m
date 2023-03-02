@@ -10,7 +10,7 @@ nuus = [0.35];
 gammas = [0];
 
 % Bulk diffusivity
-ccs = [2.0e-8];
+ccs = [1.0e-8];
 
 % No flash heating
 FHFlag = 0;

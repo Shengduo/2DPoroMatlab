@@ -5,7 +5,7 @@ prename1 = 'Original_gamma_0_pflag_3_c_0.0004';
 filename1 = strcat(prename1, '.mat');
 prename2 = 'Original_gamma_0.00017_pflag_3_c_0.0004';
 filename2 = strcat(prename2, '.mat');
-fontsize = 25;
+fontsize = 24;
 figure(1);
 % load(filename1);
 % plot(tsaveplot, (pcsave(size(pcsave, 1)/2,:)+pcsave(size(pcsave, 1)/2 + 1,:))/(2) , 'linewidth', 2.0);
@@ -27,14 +27,13 @@ for i = 1:1:size(tsaveplot, 2)
 end
 plot(tsaveplot, (pc_center + 191216.9) / 1e6, 'linewidth', 2.0);
 hold on; grid on;
-set(gca, 'fontsize', fontsize);
 % legend('Simulated Pressure', 'Targeted Pressure');
-xlabel('Time [s]', 'fontsize', fontsize);
-ylabel('Pressure [MPa]');
+xlabel('Time [s]', 'interpreter', 'latex');
+ylabel('Pressure [MPa]', 'interpreter', 'latex');
 ylim([-1, 4]);
-xlim([0, 2500]);
-title('Prescribed Central Fault Fluid Pressure', 'fontsize', fontsize);
-
+xlim([0, 2000]);
+title('Prescribed Central Fault Fluid Pressure', 'interpreter', 'latex');
+set(gca, 'fontsize', fontsize);
 
 
 % load(filename2);

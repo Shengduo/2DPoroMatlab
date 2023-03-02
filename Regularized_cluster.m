@@ -199,7 +199,8 @@ function Regularized_cluster(Nuu, Gamma, cc, FHFlag)
     bgs = 5*bgp/9;
     %shear zone porosity
     phi = 0.068;
-
+    % calculate M
+    M = (2 * G * (nuu - nu)) / (alpB ^ 2 * (1 - 2 * nuu) * (1 - 2 * nu));
     
     %mildly rate-strengthening, + dx is just to generate a vector, this can be
     %spatially heterogeneous

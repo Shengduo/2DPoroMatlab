@@ -1,11 +1,11 @@
 clc,clear;
 close all;
 G = 1.0e10;
-Objectname = 'FH_0_nuu_0.262_gamma_0_pflag_3_c_4e-07_factor_1';
+Objectname = "NewFH_0_nuu_0.262_gamma_0_pflag_3_c_3.7707e-07_factor_1";
 
 % Initialize names
 filename = strcat('../outputMats/', Objectname, '.mat');
-videoname = strcat(Objectname, '_V.mp4');
+videoname = strcat(Objectname, '_V_withDim.mp4');
 
 % Initialize video
 myVideo = VideoWriter(strcat('../mp4files/', videoname), 'MPEG-4');

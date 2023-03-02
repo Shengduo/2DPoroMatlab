@@ -2,14 +2,13 @@ clc,clear;
 close all;
 G = 1.0e10;
 % Objectname = 'FH_0_nuu_0.3_gamma_0_pflag_3_c_4e-07';
-Objectname = "NewFH_0_nuu_0.262_gamma_0_pflag_3_c_3.7707e-07_factor_1";
-% Objectname = "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-07_factor_1";
+Objectname = 'Original_gamma_0_pflag_3_c_4e-07';
 % Objectname = 'Reduced_gamma_0_pflag_3_c_4e-07';
 V_dyn = 1;
 
 % Initialize names
 filename = strcat('../outputMats/', Objectname, '.mat');
-videoname = strcat(Objectname, '_logVP_withDim.mp4');
+videoname = strcat(Objectname, '_logVP.mp4');
 
 % Initialize video
 myVideo = VideoWriter(strcat('../mp4files/', videoname), 'MPEG-4');
@@ -30,12 +29,12 @@ sigrnsave = 4 * (psave - 1/4 * sigrsave - 1/2 * pcsave);
 tsaveplot = tsaveplot(1:ind(1));
 
 % Some constants
-fontsize = 20;
+fontsize = 24;
 % Xrange
-Xrange = [-50, 50];
-Yticks = 0:500:1500;
-Trange = [0, 2000];
-Xticks = [-30, 0, 30];
+Xrange = [-6, 6];
+Xticks = 0:2:4;
+Trange = [0, 5];
+Yticks = [-4, 0, 4];
 crange = [-13, 1];
 
 % Non-dimensionalize fault length
@@ -86,7 +85,7 @@ time = tsaveplot(ind);
 V_log=log10(V);
 
 % Color V
-h=pcolor((YY)', (XX)', V_log');
+h=pcolor((YY ./ L_nu)', (XX ./ t_)', V_log');
 shading interp;
 hold on; 
 set(h, 'EdgeColor', 'none')
@@ -96,12 +95,12 @@ caxis(crange);
 ylim(Trange);
 xlim(Xrange);
 c=colorbar;
-ylabel('Time [s]', 'interpreter', 'latex'); xlabel('$X [\mathrm{m}]$', 'interpreter', 'latex'); 
-title('Evolution of Log Slip Rate' , 'interpreter', 'latex')
+ylabel('$t / t_{nu}$', 'interpreter', 'latex'); xlabel('$X / L_{nu}$', 'interpreter', 'latex'); 
+title('Evolution of Log Slip Rate $\log(V/V_{dyn})$' , 'interpreter', 'latex')
 set(gca, 'FontSize', 20);
 
 set(c,'LineWidth',1);
-ylabel(c,'$\log(V [\mathrm{m/s}])$','FontName','Avenir','FontSize',fontsize, 'interpreter', 'latex');
+ylabel(c,'$\log(V/V_{dyn})$','FontName','Avenir','FontSize',fontsize, 'interpreter', 'latex');
 set(gca, 'TickLength', [.01 .01],...
 'TickDir','in',...
 'XMinorTick', 'on','YMinorTick', 'on','FontName',...
@@ -109,13 +108,13 @@ set(gca, 'TickLength', [.01 .01],...
 box on; 
 set(gca,'layer','top')
 set(gca,'LineWidth',1);
-set(gca,'xtick',Xticks);
-set(gca,'ytick',Yticks);
+set(gca,'xtick',Yticks);
+set(gca,'ytick',Xticks);
 
 % P mask 0.5 MPa
-plot( mask_pc(1,:), tsaveplot,'--k', 'linewidth', 1.5);
+plot( mask_pc(1,:) ./ L_nu, tsaveplot ./ t_,'--k', 'linewidth', 1.5);
 hold on; grid on;
-plot(mask_pc(2,:), tsaveplot, '--k', 'linewidth', 1.5);
+plot(mask_pc(2,:) ./ L_nu, tsaveplot ./ t_, '--k', 'linewidth', 1.5);
 
 %% Loop to plot the time line and time evolution of 3 p's
 % Initialize time handle
@@ -126,23 +125,23 @@ while jjj < size(pcsave, 2)
     if jjj ~= 1
         delete(lastline);
     end
-    lastline = yline(tsaveplot(jjj), 'LineWidth', 2.0);
+    lastline = yline(tsaveplot(jjj) / t_, 'LineWidth', 2.0);
 %% Second plot -- Evolution of p+, p- and p_c  
     subplot(2,1,2);
-    plot(x, sigrsave(:, jjj) / 1.e6, 'linewidth', 2.5);
+    plot(x ./ L_nu, sigrsave(:, jjj)/si0, 'linewidth', 2.5);
 
     hold on; grid on;
-    plot(x, pcsave(:, jjj) / 1.e6, '--', 'linewidth', 2.0)
-    plot(x, sigrnsave(:, jjj) / 1.e6, 'linewidth', 1.5);
+    plot(x ./ L_nu, pcsave(:, jjj)/si0, '--', 'linewidth', 2.0)
+    plot(x ./ L_nu, sigrnsave(:, jjj)/si0, 'linewidth', 1.5);
     xlim(Xrange);
-    ylim([-2.5, 5]);
-    xlabel('$X [\mathrm{m}]$', 'interpreter', 'latex');
-    ylabel ('$\delta p$ [MPa]', 'interpreter', 'latex');
+    ylim([-0.5, 1]);
+    xlabel('$X / L_{nu}$', 'interpreter', 'latex');
+    ylabel ('$\delta p / (\sigma_0 - p_0)$', 'interpreter', 'latex');
     hold on; grid on;
-    title(strcat('Simulated Time $t = $', num2str(tsaveplot(jjj), '%.1f'), ' s'), 'interpreter', 'latex');
+    title(strcat('Simulated Time $t / t_{nu}$ =  ', num2str(tsaveplot(jjj) / t_, '%.1f')), 'interpreter', 'latex');
     legend('$\delta p^+$','$\delta p_c$', '$\delta p^-$', 'location', 'best', 'interpreter', 'latex');
     set(gca, 'FontSize', 20);
-    xticks(Xticks);
+    xticks(Yticks);
     hold off;
     pause(0.001);
     indd = find(tsaveplot > tsaveplot(jjj) + 20);
@@ -152,7 +151,6 @@ while jjj < size(pcsave, 2)
     jjj = min(indd(1), jjj + 50);
     
     %% Write the video
-    set(gcf,'color','w');
     frame = getframe(gcf);
     writeVideo(myVideo, frame);  
 end
