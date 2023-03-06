@@ -1,4 +1,4 @@
-function Regularized_cluster(Nuu, Gamma, cc, FHFlag, poreflag, factor)
+function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, BC)
 
     %% Problem setup
     % IMPORTANT: This code modified to replicate Stacy's paper results with
@@ -22,7 +22,7 @@ function Regularized_cluster(Nuu, Gamma, cc, FHFlag, poreflag, factor)
     
     % Terminating slip rate and simulating time
     Terminating_slip_rate = 1.0e-1;
-    Terminating_time = 2020;
+    Terminating_time = 10;
     
     % Terminating time if in_mass = 0, 12 days
     %if in_mass == 0
@@ -161,11 +161,11 @@ function Regularized_cluster(Nuu, Gamma, cc, FHFlag, poreflag, factor)
     %material parameters
     nu = 0.24;
     nuu = Nuu;
-    B = 0.85;
+    B = BC(1); % B = 0.85;
     G = 10e9;
     rhof0 = 1.0e3; %reference fluid density kg/m^3
     %hydraulic diffusivity
-    c = cc;
+    c = BC(2); % c = cc;
     %kappac = 1.0e-17; %make the shear zone very impermeable to replicate JMPS
     %kappacx = 1.0e9*kappac;
 
@@ -177,6 +177,15 @@ function Regularized_cluster(Nuu, Gamma, cc, FHFlag, poreflag, factor)
     c = c*((1-nu)*(1-2*nuu) )/( (1-nuu)*(1-2*nu));
     
     M = (2 * G * (nuu - nu)) / (alpB ^ 2 * (1 - 2 * nuu) * (1 - 2 * nu));
+    K0 = M * alpB * (1 - alpB) / B;
+    Ku0 = M * alpB / B;
+    disp("------------------------------------------------");
+    disp("Alpha = " + num2str(alpB));
+    disp("M = " + num2str(M));
+    disp("Kd = " + num2str(K0));
+    disp("Ku = " + num2str(Ku0));
+    disp("B = " + num2str(B));
+    disp("------------------------------------------------");
     % kappa = c/( 2*G*(1-nu)/(1-2*nu) * (B*(1+nu))/((3*alpB*(1 - nu)-2*B*alpB^2*(1-2*nu))) );
 
     %shear zone half thickness, doesn't really matter in comparing to JMPS
@@ -206,7 +215,7 @@ function Regularized_cluster(Nuu, Gamma, cc, FHFlag, poreflag, factor)
     L_nu = G * L / (b - a) / si0;
     % kappac = kappacx * factor * epsi^2 / L_nu^2;
     % kappac = kappacx * 1.0e-9;
-    kappac = kappacx * factor;
+    kappac = kappacx * factor * 1.0e-9;
     
     %mildly rate-strengthening, + dx is just to generate a vector, this can be
     %spatially heterogeneous
@@ -1008,7 +1017,8 @@ function Regularized_cluster(Nuu, Gamma, cc, FHFlag, poreflag, factor)
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
     filename = strcat('NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
-                      '_pflag_', num2str(poreflag),'_c_', num2str(c), '_factor_', num2str(factor), '.mat');
+                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
+                      '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.mat');
 
     % Record excuting time of the program
     % t1 = cputime - t0;
@@ -1017,8 +1027,9 @@ function Regularized_cluster(Nuu, Gamma, cc, FHFlag, poreflag, factor)
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('NewFH_', num2str(FHFlag), '_nuu_', num2str(nuu), '_gamma_', num2str(gamma),...
-                     '_pflag_', num2str(poreflag),'_c_', num2str(c), '_factor_', num2str(factor), '.txt');
+    txtname = strcat('NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                     '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
+                     '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.txt');
     
     fileID = fopen(txtname, 'w');
     
@@ -1034,7 +1045,7 @@ function Regularized_cluster(Nuu, Gamma, cc, FHFlag, poreflag, factor)
     fprintf(fileID, '\n%25s', 'Number of iterations:'); fprintf(fileID, num2str(it));
     fprintf(fileID, '\n%25s', 'kappac:'); fprintf(fileID, num2str(kappac));
     fprintf(fileID, '\n%25s', 'kappacx:'); fprintf(fileID, num2str(kappacx));
-    fprintf(fileID, '\n%25s', 'c:'); fprintf(fileID, num2str(c));
+    fprintf(fileID, '\n%25s', 'c:'); fprintf(fileID, num2str(cc));
     fclose(fileID);
     
 
