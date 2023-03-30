@@ -22,7 +22,7 @@ function center_VPres(prename, saveflag)
     
     % Save the figure
     if saveflag == 1
-        savename = strcat(pwd, '/../plots/', prename, '_centerV.png');
+        savename = strcat(pwd, '/../plots_2/', prename, '_centerV.png');
         disp(savename);
         print(figure(1) ,savename, '-dpng', '-r350');
     end
@@ -41,7 +41,7 @@ function center_VPres(prename, saveflag)
     
     % Save the figure
     if saveflag == 1
-        savename = strcat(pwd, '/../plots/', prename, '_centerP.png');
+        savename = strcat(pwd, '/../plots_2/', prename, '_centerP.png');
         disp(savename);
         print(figure(2) ,savename, '-dpng', '-r350');
     end
@@ -59,7 +59,7 @@ function center_VPres(prename, saveflag)
     
     % Save the figure
     if saveflag == 1
-        savename = strcat(pwd, '/../plots/', prename, '_centerTheta.png');
+        savename = strcat(pwd, '/../plots_2/', prename, '_centerTheta.png');
         disp(savename);
         print(figure(3) ,savename, '-dpng', '-r350');
     end
@@ -79,7 +79,7 @@ function center_VPres(prename, saveflag)
     
     % Save the figure
     if saveflag == 1
-        savename = strcat(pwd, '/../plots/', prename, '_centerVvsD.png');
+        savename = strcat(pwd, '/../plots_2/', prename, '_centerVvsD.png');
         disp(savename);
         print(figure(4) ,savename, '-dpng', '-r350');
     end
@@ -99,7 +99,7 @@ function center_VPres(prename, saveflag)
     
     % Save the figure
     if saveflag == 1
-        savename = strcat(pwd, '/../plots/', prename, '_centerfvsD.png');
+        savename = strcat(pwd, '/../plots_2/', prename, '_centerfvsD.png');
         disp(savename);
         print(figure(5) ,savename, '-dpng', '-r350');
     end
@@ -117,7 +117,7 @@ function center_VPres(prename, saveflag)
     
     % Save the figure
     if saveflag == 1
-        savename = strcat(pwd, '/../plots/', prename, '_centerThetavsD.png');
+        savename = strcat(pwd, '/../plots_2/', prename, '_centerThetavsD.png');
         disp(savename);
         print(figure(6) ,savename, '-dpng', '-r350');
     end

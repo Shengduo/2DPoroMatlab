@@ -1,12 +1,16 @@
 %% Load 
 clc,clear;
 close all;
-filenames = ["NewFH_0_nuu_0.35_gamma_0.00017_pflag_3_c_2.6982e-07_factor_1", ...         % 68
-            "NewFH_0_nuu_0.35_gamma_0.00017_pflag_3_c_2.6982e-08_factor_1", ...         % 71
-            "NewFH_0_nuu_0.262_gamma_0.00017_pflag_3_c_3.7707e-07_factor_1", ...         % 74
-            "NewFH_0_nuu_0.262_gamma_0.00017_pflag_3_c_3.7707e-08_factor_1"];            % 77
+% filenames = ["NewFH_0_nuu_0.35_gamma_0.00017_pflag_3_c_2.6982e-07_factor_1", ...         % 68
+%             "NewFH_0_nuu_0.35_gamma_0.00017_pflag_3_c_2.6982e-08_factor_1", ...         % 71
+%             "NewFH_0_nuu_0.262_gamma_0.00017_pflag_3_c_3.7707e-07_factor_1", ...         % 74
+%             "NewFH_0_nuu_0.262_gamma_0.00017_pflag_3_c_3.7707e-08_factor_1"];            % 77
 
+filenames = ["NewFH_0_nuu_0.35_gamma_1.7e-05_pflag_3_c_2.6982e-08_factor_1", ...
+             "NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_3_c_3.7707e-08_factor_1", ...
+             "NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_3_c_4e-08_factor_1_BC_0.43206_2.8461e-08"];
 fontsize = 24;
+lws = linspace(4.0, 1.0, length(filenames));
 
 for i = 1:1:size(filenames, 2)
     filename = strcat('../outputMats/', filenames(i), '.mat');
@@ -38,7 +42,7 @@ for i = 1:1:size(filenames, 2)
     % Change flux into Kg/m
     leaking = leaking * rhof0;
     injected_total = Injector_total * rhof0;
-    plot(tsaveplot, leaking, 'linewidth', 2.0); hold on; grid on;
+    plot(tsaveplot, leaking, 'linewidth', lws(i)); hold on; grid on;
     [val, id] = min(abs(tsaveplot - 2000));
     disp(strcat("Case name: ", filenames(i)));
     disp(strcat("leaked / total injected at 2000 s: ", num2str(leaking(id) / injected_total(id), '%2f')));
@@ -50,14 +54,20 @@ xlim(Trange);
 ylim(Lrange);
 xlabel('Time [s]', 'interpreter', 'latex');
 ylabel('Fluid leakage [Kg/m]', 'interpreter', 'latex');
-title('Injected fluid mass $\gamma=1.7\times 10^{-4}$', 'interpreter', 'latex');    
-legend('$\nu_u = 0.35, c = 4 \cdot 10^{-7}$', ...
-       '$\nu_u = 0.35, c = 4 \cdot 10^{-8}$', ...
-       '$\nu_u = 0.262, c = 4 \cdot 10^{-7}$', ...
-       '$\nu_u = 0.262, c = 4 \cdot 10^{-8}$', ...
+title('Injected fluid mass $\gamma=1.7\times 10^{-5}$', 'interpreter', 'latex');    
+% legend('$\nu_u = 0.35, c = 4 \cdot 10^{-7}$', ...
+%        '$\nu_u = 0.35, c = 4 \cdot 10^{-8}$', ...
+%        '$\nu_u = 0.262, c = 4 \cdot 10^{-7}$', ...
+%        '$\nu_u = 0.262, c = 4 \cdot 10^{-8}$', ...
+%        'location', 'best', 'interpreter', 'latex');
+
+legend("Base 3", ...
+       "Case 3", ...
+       "Case 3'", ...
        'location', 'best', 'interpreter', 'latex');
+
 set(gca, 'fontsize', fontsize);
-savename = strcat(pwd, '/../dsvg_plots1/', 'CumMassAllGamma1.7e-4.png');
+savename = strcat(pwd, '/../dsvg_plots1/', 'CumMassControlGamma1.7e-5c-8.png');
 disp(savename);
 % saveas(figure(2),savename);
-print(figure(1) ,savename, '-dpng', '-r500');
+print(figure(1) ,savename, '-dpng', '-r300');

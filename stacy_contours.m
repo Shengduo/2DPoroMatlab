@@ -531,42 +531,42 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     else
         if saveflag == 1
             if pcflag == 1
-                savename = strcat(pwd, '/../dsvg_plots1/', prename, '_PcVcontour_long.png');
+                savename = strcat(pwd, '/../dsvg_plots2/', prename, '_PcVcontour_long.png');
                 disp(savename);
                 % saveas(figure(1),savename);
                 print(figure(1) ,savename, '-dpng', '-r350');
                 
-                savename = strcat(pwd, '/../dsvg_plots1/', prename, '_mfPhicontour_long.png');
+                savename = strcat(pwd, '/../dsvg_plots2/', prename, '_mfPhicontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print(figure(2) ,savename, '-dpng', '-r350');
                 
-                savename = strcat(pwd, '/../dsvg_plots1/', prename, '_VSlipcontour_long.png');
+                savename = strcat(pwd, '/../dsvg_plots2/', prename, '_VSlipcontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print(figure(3) ,savename, '-dpng', '-r350');
                 
-                savename = strcat(pwd, '/../dsvg_plots1/', prename, '_TauNcontour_long.png');
+                savename = strcat(pwd, '/../dsvg_plots2/', prename, '_TauNcontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print(figure(3) ,savename, '-dpng', '-r350');
             else
-                savename = strcat(pwd, '/../dsvg_plots1/', prename, '_PmVcontour_long.png');
+                savename = strcat(pwd, '/../dsvg_plots2/', prename, '_PmVcontour_long.png');
                 disp(savename);
                 % saveas(figure(1),savename);
                 print(figure(1) ,savename, '-dpng', '-r500');
                 
-                savename = strcat(pwd, '/../dsvg_plots1/', prename, '_mfPhicontour_long.png');
+                savename = strcat(pwd, '/../dsvg_plots2/', prename, '_mfPhicontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print(figure(2) ,savename, '-dpng', '-r500');
                 
-                savename = strcat(pwd, '/../dsvg_plots1/', prename, '_VSlipcontour_long.png');
+                savename = strcat(pwd, '/../dsvg_plots2/', prename, '_VSlipcontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print(figure(3) ,savename, '-dpng', '-r500');
                 
-                savename = strcat(pwd, '/../dsvg_plots1/', prename, '_TauNcontour_long.png');
+                savename = strcat(pwd, '/../dsvg_plots2/', prename, '_TauNcontour_long.png');
                 disp(savename);
                 % saveas(figure(2),savename);
                 print(figure(4) ,savename, '-dpng', '-r500');

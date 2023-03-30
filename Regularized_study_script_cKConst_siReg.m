@@ -10,14 +10,14 @@ G = 10e9;
 %delete(gcp('nocreate'));
 %parpool(1);
 % Final mass injected varies as the below array
-nuus = [0.282, 0.302, 0.322];
+nuus = [0.35];
 % nuus = [0.262, 0.252, 0.242];
 
 % Dilatancy coefficient gamma varies as the array below
 gammas = [0];
 
 % Bulk diffusivity
-ccs = [4e-7];
+ccs = [4e-8];
 
 % Factors of layer y-mobility
 factors = [1];
@@ -27,7 +27,7 @@ factors = [1];
 FHFlag = 0;
 
 % Compare average and maximum pore pressure influence
-poreflags = [3];
+poreflags = [6, 3];
 
 %for i = 1:1:1
 for iii = 1:1:size(nuus, 2)
@@ -36,7 +36,7 @@ for iii = 1:1:size(nuus, 2)
             for lll = 1:1:size(factors, 2)
                 for mmm = 1:1:size(poreflags, 2)
                     [BC, fval] = findBCKeepKappaCmass(nuus(iii), nuu0, nu0, ccs(kkk), B0, G);
-                    Regularized_cluster_cKConst(nuus(iii), gammas(jjj), ccs(kkk), FHFlag, poreflags(mmm), factors(lll), BC);
+                    Regularized_cluster_cKConst_siReg(nuus(iii), gammas(jjj), ccs(kkk), FHFlag, poreflags(mmm), factors(lll), BC);
                 end
             end
         end

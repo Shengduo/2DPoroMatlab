@@ -1,7 +1,7 @@
 clc,clear;
 close all;
 G = 1.0e10;
-Objectname = 'Reduced_gamma_0_pflag_3_c_4e-07';
+Objectname = 'NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_3_c_3.7707e-07_factor_1';
 
 % Initialize names
 filename = strcat('../outputMats/', Objectname, '.mat');
@@ -115,23 +115,25 @@ while jjj < size(pcsave, 2)
     hold on; grid on;
     plot(x ./ L_nu, pcsave(:, jjj)/si0, '--', 'linewidth', 2.0)
     plot(x ./ L_nu, sigrnsave(:, jjj)/si0, 'linewidth', 1.5);
+    plot(x ./ L_nu, (sigrnsave(:, jjj) / 4 + pcsave(:, jjj) / 2 + sigrsave(:, jjj) / 4) / si0, 'k', 'linewidth', 3.0)
     xlim([-50, 50]);
     ylim([-0.5, 1]);
     xlabel('X [m]');
     ylabel ('$\delta p / (\sigma_0 - p_0)$', 'interpreter', 'latex');
     hold on; grid on;
     title(strcat('Simulated Time t =  ', num2str(tsaveplot(jjj), '%.1f'), ' s'));
-    legend('$\delta p^+$','$\delta p_c$', '$\delta p^-$', 'location', 'best', 'interpreter', 'latex');
+    legend('$\delta p^+$','$\delta p_c$', '$\delta p^-$', '$\delta p_m$', 'location', 'best', 'interpreter', 'latex');
     set(gca, 'FontSize', 20);
     xticks(-50:25:50);
     hold off;
+    set(gcf,'color','w');
     pause(0.001);
     indd = find(tsaveplot > tsaveplot(jjj) + 20);
     if isempty(indd)
         break;
     end
     jjj = min(indd(1), jjj + 50);
-    
+
     %% Write the video
     frame = getframe(gcf);
     writeVideo(myVideo, frame);  

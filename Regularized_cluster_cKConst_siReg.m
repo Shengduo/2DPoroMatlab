@@ -96,8 +96,12 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
     % Rate and State parameters
     b = 0.0160;
     a = 0.01125;
-    % Vharacteristic state evolution distance
+    % Characteristic state evolution distance
     L = 16.75e-6;
+    % Regularization distance for normal stress
+    L_pc = 10e-6; 
+    % Start regularization at V_psi
+    V_psi = 1e-1;
     % Initial state variable
     theta_0 = 2.38e12;
     
@@ -118,6 +122,7 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
 
 
     NT = 30000000;% max number of time-steps
+    % NT = 3000;
     Vthres = 1.0e4; % threshold max(V)/Vo ratio at which an implicit step is taken
     %Vthres > 1.0e8, can cause spurious oscillations
 
@@ -303,6 +308,12 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
     % Change in total normal stress (sig_yy)
     siyy = dx;
 
+    % Total normal stress
+    si = siyy + si0;
+
+    % Initial value of state variable for total normal stress
+    psi_sigma = dx + si0;
+    
     % Opening, and previous step opening
     dy = dx;
     dyp = dy;
@@ -322,6 +333,9 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
 
     % Previous step state variable theta
     thetap = theta;
+
+    % Previous tep state variable for normal stress psi_sigma
+    psi_sigmap = psi_sigma;
 
     % Pressure calculation variables ???
     KDp = KD;
@@ -355,6 +369,7 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
     sisave = tauS;
     pcsave = tauS;
     thetasave = tauS;
+    psi_sigmasave = tauS;
 
     % Real part of Fourier transform of slip, at each kernel update
     FR = tauS;
@@ -542,6 +557,8 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
         dyp = dy;
         dxp = dx;
         thetap = theta;
+        psi_sigmap = psi_sigma;
+        sip = si; 
         KDp = KD;
         KDdp = KDd;
         Vp = V;
@@ -586,6 +603,10 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
             else
                 thetag = L./Vmg.*(Vmg.*thetap/L).^(exp(-Vmg*dt/L));
             end
+
+            % Evolve psi_sigma
+            % psi_sigmag = psi_sigmap .* exp(-Vmg .* dt / L_pc) + sip .* (1 - exp(-Vmg .* dt / L_pc));
+
             %% Original way of doing convolution
             % Interpolate to get Fourier of dx at (t+dt+TT), namely DDT
             %DDTcor = (t + dt - tup)*(F-DD)./(-TT + t + dt - tup);
@@ -646,8 +667,15 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
                 si = si0 + siyy - max([pcg'; sigr'; sigrn'])';
             end
 
-            Isineg = si <= 0;
-            si(Isineg) = 1;
+%             Isineg = si <= 0;
+%             si(Isineg) = 1;
+%             tau(Isineg) = 0;
+            % Update psi_sigma based on local slip rate
+            psi_sigmag = si;
+            regVmg_idx = (Vmg >= V_psi);
+            psi_sigmag(regVmg_idx) = psi_sigmap(regVmg_idx) .* exp(-Vmg(regVmg_idx) .* dt / L_pc) + si(regVmg_idx) .* (1 - exp(-Vmg(regVmg_idx) .* dt / L_pc));
+            Isineg = (psi_sigmag <= 0);
+            psi_sigmag(Isineg) = 1;
             tau(Isineg) = 0;
 
             % If Vg large enough, use implicit method to determine V
@@ -655,9 +683,11 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
                 I = (Vg/Vr < Vthres) & (d0 == 1);
                 II = find(Vg/Vr >= Vthres);
                 if FHFlag == 0
-                    f = @(x)abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) ))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2;
+                    % f = @(x)abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) ))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2;
+                    f = @(x)abs((x/Vr - exp( ( (tau(II)-eta*x)./(psi_sigmag(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) ))) ;
                 else
-                    f = @(x)abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II)));
+                    % f = @(x)abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II)));
+                    f = @(x)abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (psi_sigmag(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II)));
                 end
                 VT = zeros(15,length(II));
                 VpT = Vg(II);
@@ -676,20 +706,24 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
                 % V(I) =   (Vr*exp( ( (tau(I)-eta*Vg(I))./(si(I)) - fr - b(I).*log(thetag(I)/(L/Vr)))./a(I)) );
                 if FHFlag == 0
                     % Regularized friction law
-                    V(I) = 2 * Vr * sinh((tau(I) - eta * Vg(I)) ./ (si(I)) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
+                    % V(I) = 2 * Vr * sinh((tau(I) - eta * Vg(I)) ./ (si(I)) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
+                    V(I) = 2 * Vr * sinh((tau(I) - eta * Vg(I)) ./ (psi_sigmag(I)) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
                 else
                     % Regularized friction law with flash heating
-                    V(I) = 2 * Vr * sinh((((tau(I) - eta * Vg(I)) ./ (si(I)) - fw) .* (1 + L ./ thetag(I) ./ Vw) + fw) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
+                    % V(I) = 2 * Vr * sinh((((tau(I) - eta * Vg(I)) ./ (si(I)) - fw) .* (1 + L ./ thetag(I) ./ Vw) + fw) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
+                    V(I) = 2 * Vr * sinh((((tau(I) - eta * Vg(I)) ./ (psi_sigmag(I)) - fw) .* (1 + L ./ thetag(I) ./ Vw) + fw) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
                 end
             % If Vg small, use explicit scheme
             else
                 %V = Vr*exp( ( (tau-eta*Vg)./(si) - fr - b.*log(thetag/(L/Vr)))./a) ;
                 if FHFlag == 0
                     % Regularized friction law
-                    V = 2 * Vr * sinh((tau - eta * Vg) ./ (si) ./ a) ./ exp((fr + b .* log(Vr * thetag / L)) ./ a);
+                    % V = 2 * Vr * sinh((tau - eta * Vg) ./ (si) ./ a) ./ exp((fr + b .* log(Vr * thetag / L)) ./ a);
+                    V = 2 * Vr * sinh((tau - eta * Vg) ./ (psi_sigmag) ./ a) ./ exp((fr + b .* log(Vr * thetag / L)) ./ a);
                 else
                     % Regularized friction law with flash heating
-                    V = 2 * Vr * sinh((((tau - eta * Vg) ./ (si) - fw ) .* (1 + L ./ thetag ./ Vw) + fw) ./ a) ./ exp((fr + b .* log(Vr * thetag / L)) ./ a);
+                    % V = 2 * Vr * sinh((((tau - eta * Vg) ./ (si) - fw ) .* (1 + L ./ thetag ./ Vw) + fw) ./ a) ./ exp((fr + b .* log(Vr * thetag / L)) ./ a);
+                    V = 2 * Vr * sinh((((tau - eta * Vg) ./ (psi_sigmag) - fw ) .* (1 + L ./ thetag ./ Vw) + fw) ./ a) ./ exp((fr + b .* log(Vr * thetag / L)) ./ a);
                 end
             end
             V = V.*d0 + Vo.*d00;
@@ -701,6 +735,12 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
             else
                 theta = L./Vm.*(Vm.*thetap/L).^(exp(-Vm*dt/L));
             end
+
+            % Change psi_sigma
+            regVm_idx = (Vm >= V_psi);
+            psi_sigma = si;
+            psi_sigma(regVm_idx) = psi_sigmap(regVm_idx) .* exp(-Vm(regVm_idx)*dt/L_pc) + si(regVm_idx) .* (1 - exp(-Vm(regVm_idx)*dt/L_pc));
+
             dphi = dphi0 - gamma*log(Vr.*theta/L);
 
             pave = 0.5*(sigr + sigrn);
@@ -774,6 +814,7 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
                     sigrsave(:,runnerplot) = sigr;
                     pcsave(:,runnerplot) = pc;
                     sisave(:,runnerplot) = si;
+                    psi_sigmasave(:, runnerplot) = psi_sigma;
                     tauS(:,runnerplot) = tau;
                     thetasave(:,runnerplot) = theta;
                     if plotflag == 1
@@ -941,11 +982,12 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
                     sigrsave = sigrsave(:,1:runnerplot - 1);
                     pcsave = pcsave(:,1:runnerplot - 1);
                     sisave = sisave(:,1:runnerplot - 1);
+                    psi_sigmasave = psi_sigmasave(:, 1:runnerplot - 1);
                     tauS = tauS(:,1:runnerplot - 1);
                     thetasave = thetasave(:, 1:runnerplot - 1);
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('NewFH_', num2str(FHFlag), '_nuu_', num2str(nuu), '_gamma_', num2str(gamma),...
+                    filename = strcat('NewSiRegFH_', num2str(FHFlag), '_nuu_', num2str(nuu), '_gamma_', num2str(gamma),...
                         '_pflag_', num2str(poreflag),'_c_', num2str(c), '_factor_', num2str(factor), '.mat');
 
                     % Record excuting time of the program
@@ -955,7 +997,7 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('NewFH_', num2str(FHFlag), '_nuu_', num2str(nuu), '_gamma_', num2str(gamma),...
+                    txtname = strcat('NewSiRegFH_', num2str(FHFlag), '_nuu_', num2str(nuu), '_gamma_', num2str(gamma),...
                         '_pflag_', num2str(poreflag),'_c_', num2str(c), '_factor_', num2str(factor), '.txt');
 
                     fileID = fopen(txtname, 'w');
@@ -1011,12 +1053,13 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
     sigrsave = sigrsave(:,1:runnerplot - 1);
     pcsave = pcsave(:,1:runnerplot - 1);
     sisave = sisave(:,1:runnerplot - 1);
+    psi_sigmasave = psi_sigmasave(:, 1:runnerplot - 1);
     tauS = tauS(:,1:runnerplot - 1);
     thetasave = thetasave(:, 1:runnerplot - 1);
 
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    filename = strcat('NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
                       '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.mat');
 
@@ -1027,7 +1070,7 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    txtname = strcat('NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
                      '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.txt');
     
