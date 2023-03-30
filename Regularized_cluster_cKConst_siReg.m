@@ -99,9 +99,9 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
     % Characteristic state evolution distance
     L = 16.75e-6;
     % Regularization distance for normal stress
-    L_pc = 10e-6; 
+    L_pc = 100e-6; 
     % Start regularization at V_psi
-    V_psi = 1e-1;
+    V_psi = 1e-2;
     % Initial state variable
     theta_0 = 2.38e12;
     
@@ -987,8 +987,9 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
                     thetasave = thetasave(:, 1:runnerplot - 1);
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('NewSiRegFH_', num2str(FHFlag), '_nuu_', num2str(nuu), '_gamma_', num2str(gamma),...
-                        '_pflag_', num2str(poreflag),'_c_', num2str(c), '_factor_', num2str(factor), '.mat');
+                    filename = strcat('../outputMats/', 'NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
+                                      '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.mat');
 
                     % Record excuting time of the program
                     %t1 = cputime - t0;
@@ -997,8 +998,9 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('NewSiRegFH_', num2str(FHFlag), '_nuu_', num2str(nuu), '_gamma_', num2str(gamma),...
-                        '_pflag_', num2str(poreflag),'_c_', num2str(c), '_factor_', num2str(factor), '.txt');
+                    txtname = strcat('../outputMats/', 'NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                                     '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
+                                     '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.txt');
 
                     fileID = fopen(txtname, 'w');
 
@@ -1059,7 +1061,7 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
 
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    filename = strcat('../outputMats/', 'NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
                       '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.mat');
 
@@ -1070,7 +1072,7 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    txtname = strcat('../outputMats/', 'NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
                      '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.txt');
     

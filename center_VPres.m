@@ -12,7 +12,8 @@ function center_VPres(prename, saveflag)
     Vrange = [1e-25, 1];
     Prange = [-2, 4];
     % Plot the center slip rate vs. Time
-    figure(1);
+    fig1 = figure(1);
+    set(fig1, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
     semilogy(tsaveplot, (Vsave(size(Vsave, 1)/2,:)+Vsave(size(Vsave, 1)/2 + 1,:))/(2) , 'linewidth', 2.0);
     xlim(Trange);
     ylim(Vrange);
@@ -27,7 +28,8 @@ function center_VPres(prename, saveflag)
         print(figure(1) ,savename, '-dpng', '-r350');
     end
     
-    figure(2);
+    fig2 = figure(2);
+    set(fig2, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
     plot(tsaveplot, (pcsave(size(pcsave, 1)/2,:)+pcsave(size(pcsave, 1)/2 + 1,:))/(2e6), 'linewidth', 3.0);
     hold on; grid on;
     plot(tsaveplot, (sigrsave(size(sigrsave, 1)/2,:)+sigrsave(size(sigrsave, 1)/2 + 1,:))/(2e6), '--', 'linewidth', 3.0);
@@ -48,7 +50,8 @@ function center_VPres(prename, saveflag)
     
     
     % Plot the center theta vs. Time
-    figure(3);
+    fig3 = figure(3);
+    set(fig3, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
     thetarange = [10^(-15), 10^15];
     semilogy(tsaveplot, (thetasave(size(thetasave, 1)/2,:)+thetasave(size(thetasave, 1)/2 + 1,:))/(2) , 'linewidth', 2.0);
     xlim(Trange);
@@ -67,7 +70,8 @@ function center_VPres(prename, saveflag)
     %% Plots vs. slip
     % Slip rate vs. slip
     drange = [0, 5000];
-    figure(4);
+    fig4 = figure(4);
+    set(fig4, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
     semilogy((dsave(size(dsave, 1)/2,:)+dsave(size(dsave, 1)/2 + 1,:))/(2e-6), (Vsave(size(Vsave, 1)/2,:)+Vsave(size(Vsave, 1)/2 + 1,:))/(2), 'linewidth', 3.0);
     hold on; grid on;
     xlim(drange);
@@ -87,7 +91,8 @@ function center_VPres(prename, saveflag)
     % Friction coefficient vs. slip
     frange = [0, 1];
     % drange = [0, 100];
-    figure(5);
+    fig5 = figure(5);
+    set(fig5, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
     plot((dsave(size(dsave, 1)/2,:)+dsave(size(dsave, 1)/2 + 1,:))/(2e-6), (tauS(size(tauS, 1)/2,:)+tauS(size(tauS, 1)/2 + 1,:))./(sisave(size(sisave, 1)/2,:)+sisave(size(sisave, 1)/2 + 1,:)), 'linewidth', 3.0);
     hold on; grid on;
     xlim(drange);
@@ -105,7 +110,8 @@ function center_VPres(prename, saveflag)
     end
     
     % Slip rate vs. slip
-    figure(6);
+    fig6 = figure(6);
+    set(fig6, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
     semilogy((dsave(size(dsave, 1)/2,:)+dsave(size(dsave, 1)/2 + 1,:))/(2e-6), (thetasave(size(thetasave, 1)/2,:)+thetasave(size(thetasave, 1)/2 + 1,:))/(2), 'linewidth', 3.0);
     hold on; grid on;
     xlim(drange);

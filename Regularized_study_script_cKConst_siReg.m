@@ -27,7 +27,7 @@ factors = [1];
 FHFlag = 0;
 
 % Compare average and maximum pore pressure influence
-poreflags = [6, 3];
+poreflags = [6];
 
 %for i = 1:1:1
 for iii = 1:1:size(nuus, 2)

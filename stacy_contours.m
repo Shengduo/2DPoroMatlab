@@ -64,8 +64,8 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
 
     ha = tight_subplot(2,1,0.040,[.15 .075],[.2 .16]);
     fig1=figure(1);
-    set(fig1,'Position',[700 700 450 500]);      
-
+    % set(fig1,'Position',[700 700 450 500]);      
+    set(fig1, 'Units', 'inches', 'Position', [0    10    6.2500    6.9444]);
     %% P plot
     axes(ha(1));
     %[X, Y] = meshgrid(time,x);
@@ -174,6 +174,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     set(gca,'ytick',yticks);
     xlabel('Time [s]','FontSize',fontsize, 'interpreter', 'latex');
     set(gca,'LineWidth',1);
+    xtickangle(0);
     box on; 
 
 
@@ -185,8 +186,8 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
 
 
 
-    set(fig2,'Position',[100 700 450 500]);      
-
+    % set(fig2,'Position',[100 700 450 500]);      
+    set(fig2, 'Units', 'inches', 'Position', [0   10    6.2500    6.9444]);
     %% Friction coefficient plot
     axes(ha(1));
     % Compute friction coefficient: f = \tau / (\sigma - p);
@@ -275,6 +276,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     set(gca,'ytick',yticks);
     xlabel('Time [s]','FontSize',fontsize, 'interpreter', 'latex');
     set(gca,'LineWidth',1);
+    xtickangle(0);
     box on; 
     
     
@@ -285,8 +287,8 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     fig3=figure(3);
     ha = tight_subplot(2,1,0.040,[.15 .075],[.2 .16]);
 
-    set(fig3,'Position',[100 700 450 500]);      
-
+    % set(fig3,'Position',[100 700 450 500]);      
+    set(fig3, 'Units', 'inches', 'Position', [0   10    6.2500    6.9444]);
     %% log V plot
     ind = [];
 
@@ -389,6 +391,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     set(gca,'ytick',[-150, 0, 150]);
     xlabel('Time [s]','FontSize',fontsize, 'interpreter', 'latex');
     set(gca,'LineWidth',1);
+    xtickangle(0);
     box on; 
     
     
@@ -397,8 +400,8 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     %--------------------------------------------------------------------------
     fig4=figure(4);
     ha = tight_subplot(2,1,0.040,[.15 .075],[.2 .16]);
-    set(fig4,'Position',[100 700 450 500]);      
-
+    % set(fig4,'Position',[100 700 450 500]);      
+    set(fig4, 'Units', 'inches', 'Position', [0   10    6.2500    6.9444]);
     %% shear stress plot
     axes(ha(1));
     % Compute shear stress
@@ -495,6 +498,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     set(gca,'ytick',yticks);
     xlabel('Time [s]','FontSize',fontsize, 'interpreter', 'latex');
     set(gca,'LineWidth',1);
+    xtickangle(0);
     box on;   
     
     
