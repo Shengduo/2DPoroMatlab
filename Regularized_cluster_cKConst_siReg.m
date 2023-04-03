@@ -101,7 +101,7 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
     % Regularization distance for normal stress
     L_pc = 100e-6; 
     % Start regularization at V_psi
-    V_psi = 1e-2;
+    V_psi = 1e-4;
     % Initial state variable
     theta_0 = 2.38e12;
     
