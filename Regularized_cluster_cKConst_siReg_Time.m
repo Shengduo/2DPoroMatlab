@@ -1,4 +1,4 @@
-function Regularized_cluster_cKConst_siReg(Nuu, Gamma, cc, FHFlag, poreflag, factor, BC)
+function Regularized_cluster_cKConst_siReg_Time(Nuu, Gamma, cc, FHFlag, poreflag, factor, BC)
 
     %% Problem setup
     % IMPORTANT: This code modified to replicate Stacy's paper results with
@@ -100,8 +100,12 @@ function Regularized_cluster_cKConst_siReg(Nuu, Gamma, cc, FHFlag, poreflag, fac
     L = 16.75e-6;
     % Regularization distance for normal stress
     L_pc = 100e-6; 
-    % Start regularization at V_psi
-    V_psi = 1e-4;
+%     % Start regularization at V_psi
+%     V_psi = 1e-4;
+    
+    % Time regularization constant
+    T_psi = 1e-4; % Set to 100 \mu s
+
     % Initial state variable
     theta_0 = 2.38e12;
     
@@ -121,8 +125,8 @@ function Regularized_cluster_cKConst_siReg(Nuu, Gamma, cc, FHFlag, poreflag, fac
     
 
 
-    NT = 30000000;% max number of time-steps
-    % NT = 3000;
+    % NT = 30000000;% max number of time-steps
+    NT = 3000;
     Vthres = 1.0e4; % threshold max(V)/Vo ratio at which an implicit step is taken
     %Vthres > 1.0e8, can cause spurious oscillations
 
@@ -670,11 +674,17 @@ function Regularized_cluster_cKConst_siReg(Nuu, Gamma, cc, FHFlag, poreflag, fac
 %             Isineg = si <= 0;
 %             si(Isineg) = 1;
 %             tau(Isineg) = 0;
-            % Update psi_sigma based on local slip rate
-            psi_sigmag = si;
-            regVmg_idx = (Vmg >= V_psi);
-            regVmg_idx = boolean(any(regVmg_idx) * ones(length(regVmg_idx), 1));
-            psi_sigmag(regVmg_idx) = psi_sigmap(regVmg_idx) .* exp(-Vmg(regVmg_idx) .* dt / L_pc) + si(regVmg_idx) .* (1 - exp(-Vmg(regVmg_idx) .* dt / L_pc));
+%             % Update psi_sigma based on local slip rate
+%             psi_sigmag = si;
+%             regVmg_idx = (Vmg >= V_psi);
+%             regVmg_idx = boolean(any(regVmg_idx) * ones(length(regVmg_idx), 1));
+%             psi_sigmag(regVmg_idx) = psi_sigmap(regVmg_idx) .* exp(-Vmg(regVmg_idx) .* dt / L_pc) + si(regVmg_idx) .* (1 - exp(-Vmg(regVmg_idx) .* dt / L_pc));
+%             Isineg = (psi_sigmag <= 0);
+%             psi_sigmag(Isineg) = 1;
+%             tau(Isineg) = 0;
+            
+            % Update psi_sigma using time regularization
+            psi_sigmag = si .* (1 - exp(-dt / T_psi)) + psi_sigmap .* (exp(-dt / T_psi));
             Isineg = (psi_sigmag <= 0);
             psi_sigmag(Isineg) = 1;
             tau(Isineg) = 0;
@@ -737,12 +747,15 @@ function Regularized_cluster_cKConst_siReg(Nuu, Gamma, cc, FHFlag, poreflag, fac
                 theta = L./Vm.*(Vm.*thetap/L).^(exp(-Vm*dt/L));
             end
 
-            % Change psi_sigma
-            regVm_idx = (Vm >= V_psi);
-            regVm_idx = boolean(any(regVm_idx) * ones(length(regVm_idx), 1));
+%             % Change psi_sigma
+%             regVm_idx = (Vm >= V_psi);
+%             regVm_idx = boolean(any(regVm_idx) * ones(length(regVm_idx), 1));
+%             
+%             psi_sigma = si;
+%             psi_sigma(regVm_idx) = psi_sigmap(regVm_idx) .* exp(-Vm(regVm_idx)*dt/L_pc) + si(regVm_idx) .* (1 - exp(-Vm(regVm_idx)*dt/L_pc));
             
-            psi_sigma = si;
-            psi_sigma(regVm_idx) = psi_sigmap(regVm_idx) .* exp(-Vm(regVm_idx)*dt/L_pc) + si(regVm_idx) .* (1 - exp(-Vm(regVm_idx)*dt/L_pc));
+            % Update psi_sigma according to time regularization
+            psi_sigma = si .* (1 - exp(-dt / T_psi)) + psi_sigmap .* (exp(-dt / T_psi));
 
             dphi = dphi0 - gamma*log(Vr.*theta/L);
 
@@ -990,7 +1003,7 @@ function Regularized_cluster_cKConst_siReg(Nuu, Gamma, cc, FHFlag, poreflag, fac
                     thetasave = thetasave(:, 1:runnerplot - 1);
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('../outputMats/', 'NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    filename = strcat('../outputMats/', 'NewTimeSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
                                       '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.mat');
 
@@ -1001,7 +1014,7 @@ function Regularized_cluster_cKConst_siReg(Nuu, Gamma, cc, FHFlag, poreflag, fac
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('../outputMats/', 'NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    txtname = strcat('../outputMats/', 'NewTimeSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
                                      '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.txt');
 
@@ -1064,7 +1077,7 @@ function Regularized_cluster_cKConst_siReg(Nuu, Gamma, cc, FHFlag, poreflag, fac
 
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('../outputMats/', 'NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    filename = strcat('../outputMats/', 'NewTimeSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
                       '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.mat');
 
@@ -1075,7 +1088,7 @@ function Regularized_cluster_cKConst_siReg(Nuu, Gamma, cc, FHFlag, poreflag, fac
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('../outputMats/', 'NewSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    txtname = strcat('../outputMats/', 'NewTimeSiRegFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factor_', num2str(factor), ...
                      '_BC_', num2str(BC(1)), '_', num2str(BC(2)), '.txt');
     
