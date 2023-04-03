@@ -99,7 +99,7 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
     % Characteristic state evolution distance
     L = 16.75e-6;
     % Regularization distance for normal stress
-    L_pc = 100e-6; 
+    L_pc = 1000e-6; 
     % Start regularization at V_psi
     V_psi = 1e-2;
     % Initial state variable
@@ -673,7 +673,7 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
             % Update psi_sigma based on local slip rate
             psi_sigmag = si;
             regVmg_idx = (Vmg >= V_psi);
-            regVmg_idx = boolean(any(regVmg_idx) * ones(length(regVmg_idx), 1));
+            regVeg_idx = boolean(any(regVmg_idx) * ones());
             psi_sigmag(regVmg_idx) = psi_sigmap(regVmg_idx) .* exp(-Vmg(regVmg_idx) .* dt / L_pc) + si(regVmg_idx) .* (1 - exp(-Vmg(regVmg_idx) .* dt / L_pc));
             Isineg = (psi_sigmag <= 0);
             psi_sigmag(Isineg) = 1;
@@ -739,8 +739,6 @@ function Regularized_cluster_cKConst(Nuu, Gamma, cc, FHFlag, poreflag, factor, B
 
             % Change psi_sigma
             regVm_idx = (Vm >= V_psi);
-            regVm_idx = boolean(any(regVm_idx) * ones(length(regVm_idx), 1));
-            
             psi_sigma = si;
             psi_sigma(regVm_idx) = psi_sigmap(regVm_idx) .* exp(-Vm(regVm_idx)*dt/L_pc) + si(regVm_idx) .* (1 - exp(-Vm(regVm_idx)*dt/L_pc));
 
