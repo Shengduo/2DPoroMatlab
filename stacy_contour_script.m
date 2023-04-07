@@ -145,6 +145,7 @@ files = ["NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_3_c_3.7707e-07_factor_1", ...
          "NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_6_c_3.7707e-07_factor_1"];
 % files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_3_c_4e-08_factor_1_BC_0.85_4e-08"];
 files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
+files = ["NewTimeSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
 % files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-08_factor_1"];
 
 for iiii = 1:1:files.length()

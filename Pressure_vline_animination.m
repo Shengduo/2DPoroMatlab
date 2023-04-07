@@ -1,14 +1,15 @@
 clc,clear;
 close all;
 G = 1.0e10;
-Objectname = 'NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_3_c_3.7707e-07_factor_1';
+% Objectname = 'NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_3_c_3.7707e-07_factor_1';
+Objectname = 'NewSiRegFH_0_nuu_0.35_gamma_0_pflag_3_c_4e-08_factor_1_BC_0.85_4e-08';
 
 % Initialize names
 filename = strcat('../outputMats/', Objectname, '.mat');
 videoname = strcat(Objectname, '_P.mp4');
 
 % Initialize video
-myVideo = VideoWriter(strcat('../mp4files/', videoname), 'MPEG-4');
+myVideo = VideoWriter(strcat('../mp4files/', videoname), 'Motion JPEG AVI');
 myVideo.FrameRate = 15;
 myVideo.Quality = 100;
 open(myVideo);
@@ -18,6 +19,9 @@ load(filename);
 tmax = 2000;
 si0 = 4.0e6;
 ind = find(tsaveplot > tmax);
+if isempty(ind)
+    ind = length(tsaveplot);
+end
 psave = psave(:, 1:ind(1));
 pcsave = pcsave(:, 1:ind(1));
 sigrsave = sigrsave(:, 1:ind(1));
@@ -28,7 +32,8 @@ tsaveplot = tsaveplot(1:ind(1));
 % Some constants
 fontsize = 24;
 % Xrange
-Xrange = [-50, 50];
+% Xrange = [-50, 50];
+Xrange = [-250, 250];
 Xticks = 0:500:1500;
 Trange = [0, 2000];
 Yticks = [-30, 0, 30];
@@ -42,7 +47,8 @@ t_ = L/Vr;
 L_nu = 1;
 
 figg = figure(1);
-figg.Position = [1000, 597, 500, 700];
+% figg.Position = [1000, 597, 500, 700]; % Mac
+figg.Position = [1000, 597, 800, 1120]; % Linux
 
 
 % Find the mask of 0.5 Mpa
@@ -81,7 +87,7 @@ set(gca, 'FontSize', 20);
 
 set(c,'LineWidth',1);
 caxis(crange);
-ylabel(c,'Pressure [MPa]','FontName','Avenir','FontSize',fontsize);
+ylabel(c,'Pressure [MPa]','FontName','Avenir','FontSize',fontsize, 'Interpreter', 'latex');
 set(gca, 'TickLength', [.01 .01],...
 'TickDir','in',...
 'XMinorTick', 'on','YMinorTick', 'on','FontName',...
@@ -116,7 +122,7 @@ while jjj < size(pcsave, 2)
     plot(x ./ L_nu, pcsave(:, jjj)/si0, '--', 'linewidth', 2.0)
     plot(x ./ L_nu, sigrnsave(:, jjj)/si0, 'linewidth', 1.5);
     plot(x ./ L_nu, (sigrnsave(:, jjj) / 4 + pcsave(:, jjj) / 2 + sigrsave(:, jjj) / 4) / si0, 'k', 'linewidth', 3.0)
-    xlim([-50, 50]);
+    xlim(Xrange);
     ylim([-0.5, 1]);
     xlabel('X [m]');
     ylabel ('$\delta p / (\sigma_0 - p_0)$', 'interpreter', 'latex');
@@ -136,6 +142,6 @@ while jjj < size(pcsave, 2)
 
     %% Write the video
     frame = getframe(gcf);
-    writeVideo(myVideo, frame);  
+    % writeVideo(myVideo, frame);  
 end
 close(myVideo);

@@ -69,7 +69,7 @@ function center_VPres(prename, saveflag)
     
     %% Plots vs. slip
     % Slip rate vs. slip
-    drange = [0, 5000];
+    drange = [0, 50000];
     fig4 = figure(4);
     set(fig4, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
     semilogy((dsave(size(dsave, 1)/2,:)+dsave(size(dsave, 1)/2 + 1,:))/(2e-6), (Vsave(size(Vsave, 1)/2,:)+Vsave(size(Vsave, 1)/2 + 1,:))/(2), 'linewidth', 3.0);
