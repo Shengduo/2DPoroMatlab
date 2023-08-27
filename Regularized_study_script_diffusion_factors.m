@@ -18,20 +18,26 @@ FHFlag = 0;
 % All diffusion factors
 kappacx_factors = [10., 1., 0.1];
 kappacy_factors = [10., 1., 0.1];
-bulkc_factors = [10., 1., 0.1];
+bulkc_factors = [1.];
 
 %for i = 1:1:1
 for iii = 1:1:size(nuus, 2)
     for jjj = 1:1:size(gammas, 2)
         for kkk = 1:1:size(ccs, 2)
-            for lll = 1:1:size(kappacx_factors)
-                for mmm = 1:1:size(kappacy_factors)
-                    for nnn = 1:1:size(bulkc_factors)
-                        factors = [kappacx_factors(lll), ...
-                                   kappacy_factors(mmm), ...
-                                   bulkc_factors(nnn)];
-                        Regularized_cluster_diffusion_factors(nuus(iii), ...
-                            gammas(jjj), ccs(kkk), FHFlag, 3, factors);
+            for lll = 1:1:size(kappacx_factors, 2)
+                for mmm = 1:1:size(kappacy_factors, 2)
+                    for nnn = 1:1:size(bulkc_factors, 2)
+                        if lll == 1 && mmm == 1 
+                            % DO NOTHING for 10, 10, 1
+                        elseif lll == 1 && mmm == 2
+                            % Do NOTHING for 10, 1, 1
+                        else
+                            factors = [kappacx_factors(lll), ...
+                                       kappacy_factors(mmm), ...
+                                       bulkc_factors(nnn)];
+                            Regularized_cluster_diffusion_factors(nuus(iii), ...
+                                gammas(jjj), ccs(kkk), FHFlag, 3, factors);
+                        end
                     end
                 end
             end
