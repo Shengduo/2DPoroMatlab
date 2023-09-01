@@ -9,7 +9,7 @@ gammas = [0];
 
 namePrefix = "WesterlyGranite";
 
-kpa_cxs = [8.7584e-11, 8.7584e-13];
+kpa_cxs = [8.7584e-13];
 % No flash heating
 FHFlag = 0;
 
