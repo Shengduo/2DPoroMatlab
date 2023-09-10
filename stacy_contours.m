@@ -18,10 +18,14 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     tau0 = f0*si0;    
     
     % Xrange
+    % Xrange = [-5, 5];
+    % yticks = [-3, 0, 3];
+
     Xrange = [-50, 50];
+    yticks = [-30, 0, 30];
+
     xticks = 0:500:1500;
     Trange = [0, 2000];
-    yticks = [-30, 0, 30];
     crange = [-2, 4];
     if subtraction_flag == 0
         pcsave = pcsave + 1.912e5;
