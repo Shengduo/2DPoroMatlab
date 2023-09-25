@@ -141,11 +141,11 @@ files = ["NewFH_0_nuu_0.242_gamma_0_pflag_3_c_4e-07_factor_1_BC_0.16586_3.297e-0
 %          "NewFH_0_nuu_0.262_gamma_0_pflag_3_c_3.7707e-08_factor_1", ...
 %          "NewFH_0_nuu_0.262_gamma_0_pflag_3_c_4e-08_factor_1_BC_0.43206_2.8461e-08"];
 
-files = ["NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_3_c_3.7707e-07_factor_1", ...
-         "NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_6_c_3.7707e-07_factor_1"];
-% files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_3_c_4e-08_factor_1_BC_0.85_4e-08"];
-files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
-files = ["NewTimeSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
+% files = ["NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_3_c_3.7707e-07_factor_1", ...
+%          "NewFH_0_nuu_0.262_gamma_1.7e-05_pflag_6_c_3.7707e-07_factor_1"];
+% % files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_3_c_4e-08_factor_1_BC_0.85_4e-08"];
+% files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
+% files = ["NewTimeSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
 % files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-08_factor_1"];
 
 %% Westerly Granite
@@ -153,7 +153,8 @@ files = ["WesterlyGranite_gamma_0_pflag_3_kappacx_8.7584e-11"];
 % files = ["WesterlyGranite_Reverted_gamma_0_pflag_3_kappacx_8.7584e-15"];
 for iiii = 1:1:files.length()
     % files(iiii) = strcat('../outputMats/', files(iiii));
-    stacy_contours(files(iiii), saveflag, 0, 1);
+    % stacy_contours(files(iiii), saveflag, 0, 1);
+    stacy_LnuVsPRegion(files(iiii), saveflag, 0, 1);
     % stacy_contours_undim(files(iiii), saveflag, 0, 1);
     % PlotLeaking(files(iiii));
     close all;
