@@ -193,6 +193,7 @@ function stacy_LnuVsPRegion(prename, saveflag, pcflag, subtraction_flag)
     fig2=figure(2);
     % set(fig1,'Position',[700 700 450 500]);      
     set(fig2, 'Units', 'inches', 'Position', [0    10    6.2500    4 * length(plot_times)]);
+
     %% plot the two lines
     % lws = linspace(3.0, 1.0, length(plot_times));
     for idx = 1:1:length(plot_times)
@@ -221,6 +222,89 @@ function stacy_LnuVsPRegion(prename, saveflag, pcflag, subtraction_flag)
         set(gca,'ytick',yticks);
         set(gcf, 'color', 'w');
     end
+
+    fig3=figure(3);
+    % set(fig1,'Position',[700 700 450 500]);      
+    set(fig3, 'Units', 'inches', 'Position', [0    10    6.2500    4 * length(plot_times)]);
+    
+    %% plot the two lines
+    % lws = linspace(3.0, 1.0, length(plot_times));
+    for idx = 1:1:length(plot_times)
+        subplot(length(plot_times), 1, idx);
+        first_idx = find(tsaveplot > plot_times(idx));
+        this_time = tsaveplot(first_idx(1));
+        distance1 = 2 * (x - mask_pc(1, first_idx(1))); 
+        distance1(distance1 < 0.) = 0.;
+        distance2 = 2 * (mask_pc(2, first_idx(1)) - x);
+        distance2(distance2 < 0.) = 0.;
+        distance = min(distance1, distance2); 
+%         plot(distance, x, 'linewidth', 1.5, 'color', "#0072BD");
+        hold on; grid on;
+        AwayFromSS = 1. - Vsave(:, first_idx(1)) .* thetasave(:, first_idx(1)) ./ L; 
+%         plot(L_nusave(:, first_idx(1)), x, 'linewidth', 1.5, ...
+%              'color', "#D95319");
+
+%         if idx == length(plot_times)
+%             xlabel("Length [m]",  'interpreter', 'latex');
+%             legend("$L_{pr}$", "$L_{nu}$", "location", "best", "interpreter", "latex")
+%         end
+        plot(AwayFromSS, x, 'linewidth', 1.5);
+        hold on; grid on; 
+        plot(log10(Vsave(:, first_idx(1))), x, 'linewidth', 1.5);
+        if idx == length(plot_times)
+            legend("$1 - V\theta/D_{RS}$", "$\log V$", 'interpreter', 'latex', "location", "best");
+        end
+        title("t = " + num2str(plot_times(idx)) + " [s]",  'interpreter', 'latex')
+        ylabel("$x$ [m]", 'interpreter', 'latex');
+        set(gca, "fontsize", fontsize);
+        xlim([-30, 2]);
+        ylim(Xrange);
+        % set(gca,'LineWidth',1);
+        set(gca,'ytick',yticks);
+        set(gcf, 'color', 'w');
+    end
+
+    % Figure 4, slip zone size vs. nucleation length
+    fig4=figure(4);
+    % set(fig1,'Position',[700 700 450 500]);      
+    set(fig4, 'Units', 'inches', 'Position', [0    10    6.2500    4 * length(plot_times)]);
+    
+    %% plot the two lines
+    % lws = linspace(3.0, 1.0, length(plot_times));
+    for idx = 1:1:length(plot_times)
+        subplot(length(plot_times), 1, idx);
+        first_idx = find(tsaveplot > plot_times(idx));
+        
+        % Calculate 1 - V\theta/D_{RS}
+        AwayFromSS = 1. - Vsave(:, first_idx(1)) .* thetasave(:, first_idx(1)) ./ L; 
+        slipZoneIdx = find(AwayFromSS < 0.);
+        this_time = tsaveplot(first_idx(1));
+        distance1 = 2 * (x - x(slipZoneIdx(1))); 
+        distance1(distance1 < 0.) = 0.;
+        distance2 = 2 * (x(slipZoneIdx(end)) - x);
+        distance2(distance2 < 0.) = 0.;
+        distance = min(distance1, distance2); 
+        plot(distance, x, 'linewidth', 1.5, 'color', "#0072BD");
+        hold on; grid on;
+        plot(L_nusave(:, first_idx(1)), x, 'linewidth', 1.5, ...
+             'color', "#D95319");
+
+        if idx == length(plot_times)
+            xlabel("Length [m]",  'interpreter', 'latex');
+            legend("$L_{slip}$", "$L_{nu}$", "location", "best", "interpreter", "latex")
+        end
+        % plot(AwayFromSS, x, 'linewidth', 1.5);
+
+        title("t = " + num2str(plot_times(idx)) + " [s]",  'interpreter', 'latex')
+        ylabel("$x$ [m]", 'interpreter', 'latex');
+        set(gca, "fontsize", fontsize);
+        xlim([0, 50]);
+        ylim(Xrange);
+        % set(gca,'LineWidth',1);
+        set(gca,'ytick',yticks);
+        set(gcf, 'color', 'w');
+    end
+
     %% Save the figures
     if subtraction_flag == 0
         if saveflag == 1
@@ -264,6 +348,16 @@ function stacy_LnuVsPRegion(prename, saveflag, pcflag, subtraction_flag)
                 disp(savename);
                 % saveas(figure(1),savename);
                 print(figure(2) ,savename, '-dpng', '-r500');
+                
+                savename = strcat(pwd, '/../dsvg_plots2/', prename, '_PmV_Away_logV.png');
+                disp(savename);
+                % saveas(figure(1),savename);
+                print(figure(3) ,savename, '-dpng', '-r500');
+
+                savename = strcat(pwd, '/../dsvg_plots2/', prename, '_PmV_SlipZone_Lnu.png');
+                disp(savename);
+                % saveas(figure(1),savename);
+                print(figure(4) ,savename, '-dpng', '-r500');
             end
         end
     end

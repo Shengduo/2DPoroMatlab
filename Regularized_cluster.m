@@ -205,8 +205,8 @@ function Regularized_cluster(Nuu, Gamma, cc, FHFlag, poreflag, factor)
     kappacx = 8.7584e-11;
     L_nu = G * L / (b - a) / si0;
     % kappac = kappacx * factor * epsi^2 / L_nu^2;
-    % kappac = kappacx * 1.0e-9;
-    kappac = kappacx * factor;
+    kappac = kappacx * 1.0e-9;
+    % kappac = kappacx * factor;
     
     %mildly rate-strengthening, + dx is just to generate a vector, this can be
     %spatially heterogeneous

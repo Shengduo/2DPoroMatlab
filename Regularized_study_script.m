@@ -19,7 +19,7 @@ FHFlag = 0;
 for iii = 1:1:size(nuus, 2)
     for jjj = 1:1:size(gammas, 2)
         for kkk = 1:1:size(ccs, 2)
-            Regularized_cluster(nuus(iii), gammas(jjj), ccs(kkk), FHFlag);
+            Regularized_cluster(nuus(iii), gammas(jjj), ccs(kkk), FHFlag, 3, 1);
         end
     end
 end
