@@ -25,7 +25,7 @@ function stacy_LnuVsPRegion(prename, saveflag, pcflag, subtraction_flag)
     tau0 = f0*si0; 
 
     % Nucleation length with time
-    L_nusave = G * L / (b(1) - a(1)) ./ sisave .* nu ./ (1. - nu);
+    L_nusave = G * L / (b(1) - a(1)) ./ sisave ./ (1. - nu);
     % Xrange
     % Xrange = [-5, 5];
     % yticks = [-3, 0, 3];

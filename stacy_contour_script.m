@@ -146,10 +146,19 @@ files = ["NewFH_0_nuu_0.242_gamma_0_pflag_3_c_4e-07_factor_1_BC_0.16586_3.297e-0
 % % files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_3_c_4e-08_factor_1_BC_0.85_4e-08"];
 % files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
 % files = ["NewTimeSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
-% files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-08_factor_1"];
+files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-08_factor_1"];
+%% Parametric study on diffusion parameters
+% files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_10_10", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_1_1", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_1_10", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_0.1_1", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_0.1_1_1"];
+% 
+% files = files(5:6);
 
 %% Westerly Granite
-files = ["WesterlyGranite_gamma_0_pflag_3_kappacx_8.7584e-11"];
+% files = ["WesterlyGranite_gamma_0_pflag_3_kappacx_8.7584e-11"];
 % files = ["WesterlyGranite_Reverted_gamma_0_pflag_3_kappacx_8.7584e-15"];
 for iiii = 1:1:files.length()
     % files(iiii) = strcat('../outputMats/', files(iiii));
@@ -158,7 +167,7 @@ for iiii = 1:1:files.length()
     % stacy_contours_undim(files(iiii), saveflag, 0, 1);
     % PlotLeaking(files(iiii));
     close all;
-    center_VPres(files(iiii), saveflag);
+    % center_VPres(files(iiii), saveflag);
     close all;
     % stacy_contours(files(iiii), saveflag, 1, 1);
     % close all;
