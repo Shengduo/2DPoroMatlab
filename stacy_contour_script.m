@@ -152,12 +152,15 @@ files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_10_10", ...
          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_1_1", ...
          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_1_10", ...
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_0.1_1", ...
+         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_0.1_1", ...   % 5
          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_0.1_1_1", ...
          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_10_10", ...
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_10"];
-
-files = files([5, 7, 8]);
+         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_10", ...
+         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_0.1", ...
+         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_0.1_0.1", ... % 10
+         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_10_1"];    % 11
+ 
+files = files([11]);
 
 %% Westerly Granite
 % files = ["WesterlyGranite_gamma_0_pflag_3_kappacx_8.7584e-11"];
@@ -166,8 +169,8 @@ for iiii = 1:1:files.length()
     % files(iiii) = strcat('../outputMats/', files(iiii));
     stacy_contours(files(iiii), saveflag, 0, 1);
     close all;
-    % stacy_LnuVsPRegion(files(iiii), saveflag, 0, 1);
-    % close all;
+    stacy_LnuVsPRegion(files(iiii), saveflag, 0, 1);
+    close all;
     % stacy_contours_undim(files(iiii), saveflag, 0, 1);
     % PlotLeaking(files(iiii));
     % close all;
