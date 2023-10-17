@@ -1,4 +1,5 @@
-function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag, factors)
+function Regularized_cluster_diffusion_factors_flux_control(Nuu, Gamma, cc, ...
+    FHFlag, poreflag, factors, flux)
     %% factors: 
     % diffusivity factor for [kappacx, kappacy and c] of the bulk
     %% Problem setup
@@ -247,8 +248,7 @@ function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag,
     % Injection over 1400s
     %in_mass = 3.386e6 * rhof0 * phi * (bfp + bnp) * 2 * epsi * (rhs - lhs);
     %in_rate = in_mass / 1400;
-    %INjectmass = @(t) (in_rate) * t - ...
-    %    (in_rate)*(t-1400)*heaviside(t-1400); % multiplies INprofile represents cumulative mass;
+    INjectmass = @(t) (flux) * t; % multiplies INprofile represents cumulative mass;
     %This is mathematically cleaner in the fluid mass balance
     %the source term is then INjectmass(t)*INprofile
     %%
@@ -378,9 +378,6 @@ function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag,
 
     % Time of plot
     tsaveplot = zeros(1,NT/NSplot + 1);
-
-    % Injection masses
-    InjectMaSave = zeros(1, NT/NSplot + 1);
 
 
     %% Compute kernels
@@ -521,17 +518,18 @@ function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag,
         dtmax = 150 / 100;
         % Adapt injected mass accordingly
         if it>2
-            % pcg = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - 2*INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
-            pcg_temp = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
-            INjectma = (pcg_center - (pcg_temp(size(pcg_temp,1)/2) + pcg_temp(size(pcg_temp,1)/2+1))/2) ...
-                * (rhof0*phi*(bfp + bnp)) / max(INprofile);
-            pcg = pcg_temp + INjectma*INprofile./(rhof0*phi*(bfp + bnp));
+            pcg = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - 2*INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
+            % pcg_temp = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
+            % INjectma = (pcg_center - (pcg_temp(size(pcg_temp,1)/2) + pcg_temp(size(pcg_temp,1)/2+1))/2) ...
+            %     * (rhof0*phi*(bfp + bnp)) / max(INprofile);
+            % pcg = pcg_temp + INjectma*INprofile./(rhof0*phi*(bfp + bnp));
         else
-            INjectma = (pcg_center - (pc(size(pc,1)/2) + pc(size(pc,1)/2+1))/2) ...
-                * (rhof0*phi*(bfp + bnp)) / max(INprofile);
-            pcg = pc + INjectma*INprofile./(rhof0*phi*(bfp + bnp));
+            % INjectma = (pcg_center - (pc(size(pc,1)/2) + pc(size(pc,1)/2+1))/2) ...
+            %     * (rhof0*phi*(bfp + bnp)) / max(INprofile);
+            % pcg = pc + INjectma*INprofile./(rhof0*phi*(bfp + bnp));
+            pcg = pc + INjectma(t)*INprofile./(rhof0*phi*(bfp + bnp));
         end
-        
+
         dyg = dy + dt*(dy-dyp)/dtp;
         Vg =  V + dt*(V-Vp)/dtp;
         Vmg = 0.5*(V + Vg);
@@ -778,7 +776,6 @@ function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag,
                     sisave(:,runnerplot) = si;
                     tauS(:,runnerplot) = tau;
                     thetasave(:,runnerplot) = theta;
-                    InjectMaSave(runnerplot) = INjectma; 
                     if plotflag == 1
                         f1 = figure(1);
                         sgtitle(strcat('\epsilon = ',' ',num2str(epsi),' --- ','time =',' ',num2str(t/(24*60*60)),' ',' days'))
@@ -946,10 +943,9 @@ function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag,
                     sisave = sisave(:,1:runnerplot - 1);
                     tauS = tauS(:,1:runnerplot - 1);
                     thetasave = thetasave(:, 1:runnerplot - 1);
-                    InjectMaSave(runnerplot) = InjectMaSave(:, 1:runnerplot - 1); 
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('../outputMats/', 'NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    filename = strcat('../outputMats/', 'Flux_control_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -960,7 +956,7 @@ function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag,
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('../outputMats/', 'NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    txtname = strcat('../outputMats/', 'Flux_control_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1019,11 +1015,10 @@ function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag,
     sisave = sisave(:,1:runnerplot - 1);
     tauS = tauS(:,1:runnerplot - 1);
     thetasave = thetasave(:, 1:runnerplot - 1);
-    InjectMaSave(runnerplot) = InjectMaSave(:, 1:runnerplot - 1);
-    
+
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('../outputMats/', 'NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    filename = strcat('../outputMats/', 'Flux_control_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1034,7 +1029,7 @@ function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag,
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('../outputMats/', 'NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    txtname = strcat('../outputMats/', 'Flux_control_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
     
