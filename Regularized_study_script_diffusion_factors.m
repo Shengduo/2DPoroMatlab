@@ -17,8 +17,8 @@ FHFlag = 0;
 
 % All diffusion factors
 kappacx_factors = [1.];
-kappacy_factors = [1., 10.];
-bulkc_factors = [10.];
+kappacy_factors = [10.];
+bulkc_factors = [1.];
 
 %for i = 1:1:1
 for iii = 1:1:size(nuus, 2)
