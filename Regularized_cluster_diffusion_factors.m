@@ -946,7 +946,7 @@ function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag,
                     sisave = sisave(:,1:runnerplot - 1);
                     tauS = tauS(:,1:runnerplot - 1);
                     thetasave = thetasave(:, 1:runnerplot - 1);
-                    InjectMaSave(runnerplot) = InjectMaSave(:, 1:runnerplot - 1); 
+                    InjectMaSave = InjectMaSave(:, 1:runnerplot - 1); 
 
                     % Filename reflects fract number and parallelization
                     filename = strcat('../outputMats/', 'NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
@@ -1019,7 +1019,7 @@ function Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag,
     sisave = sisave(:,1:runnerplot - 1);
     tauS = tauS(:,1:runnerplot - 1);
     thetasave = thetasave(:, 1:runnerplot - 1);
-    InjectMaSave(runnerplot) = InjectMaSave(:, 1:runnerplot - 1);
+    InjectMaSave = InjectMaSave(:, 1:runnerplot - 1);
     
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
