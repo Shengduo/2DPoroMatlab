@@ -17,8 +17,13 @@ FHFlag = 0;
 
 % All diffusion factors
 kappacx_factors = [1.];
-kappacy_factors = [10.];
+kappacy_factors = [1.];
 bulkc_factors = [1.];
+
+% Injection flux
+baseFlux = 1.0e-4;
+fluxes = baseFlux .* [0.5, 2.0, 1.0];
+
 
 %for i = 1:1:1
 for iii = 1:1:size(nuus, 2)
@@ -27,11 +32,14 @@ for iii = 1:1:size(nuus, 2)
             for lll = 1:1:size(kappacx_factors, 2)
                 for mmm = 1:1:size(kappacy_factors, 2)
                     for nnn = 1:1:size(bulkc_factors, 2)
-                        factors = [kappacx_factors(lll), ...
-                                   kappacy_factors(mmm), ...
-                                   bulkc_factors(nnn)];
-                        Regularized_cluster_diffusion_factors(nuus(iii), ...
-                            gammas(jjj), ccs(kkk), FHFlag, 3, factors);
+                        for fff = 1:1:size(fluxes, 2)
+                            factors = [kappacx_factors(lll), ...
+                                       kappacy_factors(mmm), ...
+                                       bulkc_factors(nnn)];
+                            Regularized_cluster_diffusion_factors_flux_control(nuus(iii), ...
+                                gammas(jjj), ccs(kkk), FHFlag, 3, factors, ...
+                                fluxes(fff));
+                        end
                     end
                 end
             end

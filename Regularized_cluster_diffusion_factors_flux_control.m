@@ -527,7 +527,7 @@ function Regularized_cluster_diffusion_factors_flux_control(Nuu, Gamma, cc, ...
             % INjectma = (pcg_center - (pc(size(pc,1)/2) + pc(size(pc,1)/2+1))/2) ...
             %     * (rhof0*phi*(bfp + bnp)) / max(INprofile);
             % pcg = pc + INjectma*INprofile./(rhof0*phi*(bfp + bnp));
-            pcg = pc + INjectma(t)*INprofile./(rhof0*phi*(bfp + bnp));
+            pcg = pc + INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp));
         end
 
         dyg = dy + dt*(dy-dyp)/dtp;
@@ -723,7 +723,7 @@ function Regularized_cluster_diffusion_factors_flux_control(Nuu, Gamma, cc, ...
             M(1,length(x)) = -0.5*dt*(KB)/DX;
             M(length(x),1) = -0.5*dt*(KB)/DX;
 
-            pc = M\(- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - INjectma*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KDp - 0.5*KA*dt*(pave + pavep - pcp) + LK ));
+            pc = M\(- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KDp - 0.5*KA*dt*(pave + pavep - pcp) + LK ));
 
             pm = 0.5*(pc + 0.5*(sigr + sigrn));
             dy = 2*epsi*(phi/(1-phi)*bnp - bgp).*(pm - (phi/(1-phi)*bns - bgs)./(phi/(1-phi)*bnp - bgp).*siyy) + 2*epsi*dphi/(1-phi);
