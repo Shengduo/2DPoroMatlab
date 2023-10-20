@@ -248,7 +248,7 @@ function Regularized_cluster_diffusion_factors_flux_control(Nuu, Gamma, cc, ...
     % Injection over 1400s
     %in_mass = 3.386e6 * rhof0 * phi * (bfp + bnp) * 2 * epsi * (rhs - lhs);
     %in_rate = in_mass / 1400;
-    INjectmass = @(t) (flux) * t; % multiplies INprofile represents cumulative mass;
+    INjectmass = @(t) (flux) * (1 - exp(-t / 10.)) * t; % multiplies INprofile represents cumulative mass;
     %This is mathematically cleaner in the fluid mass balance
     %the source term is then INjectmass(t)*INprofile
     %%
