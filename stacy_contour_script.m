@@ -147,6 +147,7 @@ files = ["NewFH_0_nuu_0.242_gamma_0_pflag_3_c_4e-07_factor_1_BC_0.16586_3.297e-0
 % files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
 % files = ["NewTimeSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
 files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-08_factor_1"];
+
 %% Parametric study on diffusion parameters
 files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_10_10", ...
          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
@@ -161,6 +162,12 @@ files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_10_10", ...
          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_10_1"];    % 11
  
 files = files([11]);
+
+%% MassControl injection
+files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+         "Flux_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];    % 2
+
+files = files([2]);
 
 %% Westerly Granite
 % files = ["WesterlyGranite_gamma_0_pflag_3_kappacx_8.7584e-11"];

@@ -279,11 +279,15 @@ function stacy_LnuVsPRegion(prename, saveflag, pcflag, subtraction_flag)
         AwayFromSS = 1. - Vsave(:, first_idx(1)) .* thetasave(:, first_idx(1)) ./ L; 
         slipZoneIdx = find(AwayFromSS < 0.);
         this_time = tsaveplot(first_idx(1));
-        distance1 = 2 * (x - x(slipZoneIdx(1))); 
-        distance1(distance1 < 0.) = 0.;
-        distance2 = 2 * (x(slipZoneIdx(end)) - x);
-        distance2(distance2 < 0.) = 0.;
-        distance = min(distance1, distance2); 
+        if length(slipZoneIdx) == 0
+            distance = zeros(1, length(x));
+        else
+            distance1 = 2 * (x - x(slipZoneIdx(1))); 
+            distance1(distance1 < 0.) = 0.;
+            distance2 = 2 * (x(slipZoneIdx(end)) - x);
+            distance2(distance2 < 0.) = 0.;
+            distance = min(distance1, distance2);
+        end
         plot(distance, x, 'linewidth', 1.5, 'color', "#0072BD");
         hold on; grid on;
         plot(L_nusave(:, first_idx(1)), x, 'linewidth', 1.5, ...

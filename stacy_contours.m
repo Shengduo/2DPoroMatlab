@@ -364,7 +364,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     ylabel('x [m]','FontSize',fontsize, 'interpreter', 'latex');
     colormap(ha(2),brewermap([],'YlOrRd'));
     xlim(Trange);
-    ylim([-250, 250]);
+    ylim(Xrange);
     c=colorbar;
 
     %--------------------------------------------------------------------------
@@ -392,7 +392,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     box on; 
     set(gca,'layer','top')
     set(gca,'xtick',xticks);
-    set(gca,'ytick',[-150, 0, 150]);
+    set(gca,'ytick',yticks);
     xlabel('Time [s]','FontSize',fontsize, 'interpreter', 'latex');
     set(gca,'LineWidth',1);
     xtickangle(0);
