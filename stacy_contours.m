@@ -1,4 +1,4 @@
-function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
+function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT)
     % pwdd = '/Users/shengduoliu/Documents/Elias_Matlab/cand_simus/stacy_replicate/Poroelastic_properties_comparison';
     %saveflag = 1;
     %pcflag = 0;
@@ -24,8 +24,8 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     Xrange = [-50, 50];
     yticks = [-30, 0, 30];
 
-    xticks = 0:500:1500;
-    Trange = [0, 2000];
+    xticks = 0:500 * (floor(BigT / 2000)):(BigT - 500); % xticks = 0:500:1500;
+    Trange = [0, BigT]; % Trange = [0, 2000];
     crange = [-2, 4];
     if subtraction_flag == 0
         pcsave = pcsave + 1.912e5;
@@ -69,7 +69,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag)
     ha = tight_subplot(2,1,0.040,[.15 .075],[.2 .16]);
     fig1=figure(1);
     % set(fig1,'Position',[700 700 450 500]);      
-    set(fig1, 'Units', 'inches', 'Position', [0    10    6.2500    6.9444]);
+    set(fig1, 'Units', 'inches', 'Position', [0   10    6.2500    6.9444]);
     %% P plot
     axes(ha(1));
     %[X, Y] = meshgrid(time,x);

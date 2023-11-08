@@ -1,4 +1,4 @@
-function stacy_LnuVsPRegion(prename, saveflag, pcflag, subtraction_flag)
+function stacy_LnuVsPRegion(prename, saveflag, pcflag, subtraction_flag, BigT)
     % pwdd = '/Users/shengduoliu/Documents/Elias_Matlab/cand_simus/stacy_replicate/Poroelastic_properties_comparison';
     %saveflag = 1;
     %pcflag = 0;
@@ -33,8 +33,9 @@ function stacy_LnuVsPRegion(prename, saveflag, pcflag, subtraction_flag)
     Xrange = [-50, 50];
     yticks = [-30, 0, 30];
 
-    xticks = 0:500:1500;
-    Trange = [0, 2000];
+    xticks = 0:500 * (floor(BigT / 2000)):(BigT - 500); % xticks = 0:500:1500;
+    Trange = [0, BigT]; % Trange = [0, 2000];
+
     crange = [-2, 4];
     if subtraction_flag == 0
         pcsave = pcsave + 1.912e5;
@@ -69,7 +70,7 @@ function stacy_LnuVsPRegion(prename, saveflag, pcflag, subtraction_flag)
         end
     end
 
-    plot_times = [500, 750, 1000, 1250];
+    plot_times = [500, 750, 1000, 1800] * floor(BigT / 2000);
     %--------------------------------------------------------------------------
     % % First the color map
     [XX,YY] = meshgrid(tsaveplot, x);
