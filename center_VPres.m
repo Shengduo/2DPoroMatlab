@@ -1,4 +1,4 @@
-function center_VPres(prename, saveflag)
+function center_VPres(prename, saveflag, BigT)
 
     filename = strcat('../outputMats/', prename, '.mat');
     load(filename, 'pcsave', 'psave', 'sigrsave', 'tsaveplot', 'thetasave', ...
@@ -8,7 +8,7 @@ function center_VPres(prename, saveflag)
     % Xrange
     % Xrange = [-50, 50];
     
-    Trange = [0, 2000];
+    Trange = [0, BigT];
     Vrange = [1e-25, 1];
     Prange = [-2, 4];
     % Plot the center slip rate vs. Time
