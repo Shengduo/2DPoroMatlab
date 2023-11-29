@@ -168,9 +168,16 @@ files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", .
          "FluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
          "FluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
          "FluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];    % 4
+
+% With higher initial slip rate
+files = ["HighVoFluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+         "HighVoFluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
+         "HighVoFluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
+         "HighVoFluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];    % 4
+
 BigTs = [2000, 8000, 4000, 8000 / 3];
 
-selected_to_plot = [2, 3, 4];
+selected_to_plot = [1, 2, 3, 4];
 files = files(selected_to_plot);
 BigTs = BigTs(selected_to_plot);
 

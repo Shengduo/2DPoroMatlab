@@ -118,7 +118,7 @@ function Regularized_cluster_diffusion_factors_flux_control_higherVo(Nuu, Gamma,
     % theta_0 = 2.38e12;
     % Vo = 2 * Vr * sinh(tau0 / a / si0) / exp((fr + b * log(Vr * theta_0 / L)) / a); % Initial slip rate
     Vo = 1.0e-11; % Prescribed initial slip rate
-    theta_0 = exp((log(2 * Vr * sinh(tau0 / a / si0) / Vo) - fr) / b * a) * L / Vr;
+    theta_0 = exp(((log(2 * Vr * sinh(tau0 / a / si0) / Vo)) * a - fr)/ b) * L / Vr;
 
 
     NT = 30000000;% max number of time-steps
