@@ -22,7 +22,7 @@ bulkc_factors = [1.];
 
 % Injection flux
 baseFlux = 1.0e-4;
-fluxes = baseFlux .* [0.25, 0.5, 0.75, 1.0];
+fluxes = baseFlux .* [1.0, 0.75, 0.5, 0.25];
 
 
 %for i = 1:1:1
@@ -36,7 +36,7 @@ for iii = 1:1:size(nuus, 2)
                             factors = [kappacx_factors(lll), ...
                                        kappacy_factors(mmm), ...
                                        bulkc_factors(nnn)];
-                            Regularized_cluster_diffusion_factors_flux_control_higherVo(nuus(iii), ...
+                            Regularized_cluster_diffusion_factors_flux_control_Vs(nuus(iii), ...
                                 gammas(jjj), ccs(kkk), FHFlag, 3, factors, ...
                                 fluxes(fff));
                         end
