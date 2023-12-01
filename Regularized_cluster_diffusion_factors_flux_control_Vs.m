@@ -97,7 +97,7 @@ function Regularized_cluster_diffusion_factors_flux_control_Vs(Nuu, Gamma, cc,..
     alpmin =  1.0e-6;
     
     % Rate and State parameters
-    a = 0.0160; % b = 0.0160;
+    a = 0.01325; % b = 0.0160;
     b = 0.01125; % a = 0.01125;
 
     % Vharacteristic state evolution distance

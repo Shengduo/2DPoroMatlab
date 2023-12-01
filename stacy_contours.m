@@ -28,7 +28,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, widef
         yticks = [-120, 0, 120];
         prename = prename + "_wide_";
     end
-
+    Vcrange = [-7, 1];
     xticks = 0:500 * (floor(BigT / 2000)):(BigT - 500); % xticks = 0:500:1500;
     Trange = [0, BigT]; % Trange = [0, 2000];
     crange = [-2, 4];
@@ -171,7 +171,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, widef
     xlim(Trange);
     c=colorbar;
     set(c,'LineWidth',1);
-    caxis([-13 1]);
+    clim(Vcrange);
     ylabel(c,'Log Slip Rate [m/s]','FontName','Avenir','FontSize',fontsize, 'interpreter', 'latex');
     set(gca, 'TickLength', [.01 .01],...
     'TickDir','in',...
@@ -343,7 +343,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, widef
     xlim(Trange);
     c=colorbar;
     set(c,'LineWidth',1);
-    caxis([-13 1]);
+    clim(Vcrange);
     ylabel(c,'Log Slip Rate [m/s]','FontName','Avenir','FontSize',fontsize, 'interpreter', 'latex');
     set(gca, 'TickLength', [.01 .01],...
     'TickDir','in',...

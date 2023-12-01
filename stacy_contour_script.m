@@ -175,27 +175,37 @@ files = ["HighVoFluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors
          "HighVoFluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
          "HighVoFluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];    % 4
 
+% With VS rate-and-state friction
+files = ["VsFluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+         "VsFluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
+         "VsFluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
+         "VsFluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];    % 4
+
 BigTs = [2000, 8000, 4000, 8000 / 3];
 
-selected_to_plot = [1, 4];
+selected_to_plot = [1, 2, 3, 4];
 files = files(selected_to_plot);
 BigTs = BigTs(selected_to_plot);
-wideflag = 1;
+% wideflag = 1;
 
 %% Westerly Granite
 % files = ["WesterlyGranite_gamma_0_pflag_3_kappacx_8.7584e-11"];
 % files = ["WesterlyGranite_Reverted_gamma_0_pflag_3_kappacx_8.7584e-15"];
 for iiii = 1:1:files.length()
     % files(iiii) = strcat('../outputMats/', files(iiii));
-    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), wideflag);
+    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0);
     close all;
-    % stacy_LnuVsPRegion(files(iiii), saveflag, 0, 1, BigTs(iiii));
-    % close all;
+    
+    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 1);
+    close all;
+
+    stacy_LnuVsPRegion(files(iiii), saveflag, 0, 1, BigTs(iiii));
+    close all;
     % % stacy_contours_undim(files(iiii), saveflag, 0, 1);
     % % PlotLeaking(files(iiii));
     % % close all;
-    % center_VPres(files(iiii), saveflag, BigTs(iiii));
-    % close all;
+    center_VPres(files(iiii), saveflag, BigTs(iiii));
+    close all;
     % stacy_contours(files(iiii), saveflag, 1, 1);
     % close all;
 end
