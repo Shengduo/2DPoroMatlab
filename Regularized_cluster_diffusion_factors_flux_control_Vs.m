@@ -97,8 +97,8 @@ function Regularized_cluster_diffusion_factors_flux_control_Vs(Nuu, Gamma, cc,..
     alpmin =  1.0e-6;
     
     % Rate and State parameters
-    a = 0.01325; % b = 0.0160;
-    b = 0.01125; % a = 0.01125;
+    a = 0.005; % b = 0.0160;
+    b = 0.003; % a = 0.01125;
 
     % Vharacteristic state evolution distance
     L = 16.75e-6;
@@ -958,7 +958,7 @@ function Regularized_cluster_diffusion_factors_flux_control_Vs(Nuu, Gamma, cc,..
                     InjectMaSave = InjectMaSave(:, 1:runnerplot - 1); 
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('../outputMats/', 'VsFluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    filename = strcat('../outputMats/', 'VsFluxTime_', num2str(flux),'_a_', num2str(a(1)), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -969,7 +969,7 @@ function Regularized_cluster_diffusion_factors_flux_control_Vs(Nuu, Gamma, cc,..
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('../outputMats/', 'VsFluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    txtname = strcat('../outputMats/', 'VsFluxTime_', num2str(flux),'_a_', num2str(a(1)), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1032,7 +1032,7 @@ function Regularized_cluster_diffusion_factors_flux_control_Vs(Nuu, Gamma, cc,..
     
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('../outputMats/', 'VsFluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    filename = strcat('../outputMats/', 'VsFluxTime_', num2str(flux),'_a_', num2str(a(1)), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1043,7 +1043,7 @@ function Regularized_cluster_diffusion_factors_flux_control_Vs(Nuu, Gamma, cc,..
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('../outputMats/', 'VsFluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    txtname = strcat('../outputMats/', 'VsFluxTime_', num2str(flux),'_a_', num2str(a(1)), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
     
