@@ -176,14 +176,22 @@ files = ["HighVoFluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors
          "HighVoFluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];    % 4
 
 % With VS rate-and-state friction
-files = ["VsFluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "VsFluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
-         "VsFluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
-         "VsFluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];    % 4
+files = ["VsFluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 1
+         "VsFluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
+         "VsFluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
+         "VsFluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];    % 4
 
-BigTs = [2000, 8000, 4000, 8000 / 3];
+% Vs but lower a 2024-1-11
+files = ["VsFluxTime_2.5e-05_a_0.005_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+         "VsFluxTime_5e-05_a_0.005_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+         "VsFluxTime_7.5e-05_a_0.005_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+         "VsFluxTime_0.0001_a_0.005_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];
 
-selected_to_plot = [1, 2, 3, 4];
+
+
+BigTs = [8000, 4000, 8000 / 3, 2000];
+
+selected_to_plot = [1, 2];
 files = files(selected_to_plot);
 BigTs = BigTs(selected_to_plot);
 % wideflag = 1;
