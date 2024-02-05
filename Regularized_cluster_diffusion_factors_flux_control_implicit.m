@@ -1,4 +1,4 @@
-function Regularized_cluster_diffusion_factors_flux_control(Nuu, Gamma, cc,...
+function Regularized_cluster_diffusion_factors_flux_control_implicit(Nuu, Gamma, cc,...
                     FHFlag, poreflag, factors, flux)
     %% factors: 
     % diffusivity factor for [kappacx, kappacy and c] of the bulk
@@ -664,30 +664,36 @@ function Regularized_cluster_diffusion_factors_flux_control(Nuu, Gamma, cc,...
                 I = (Vg/Vr < Vthres) & (d0 == 1);
                 II = find(Vg/Vr >= Vthres);
                 if FHFlag == 0
-                    f = @(x)abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) ))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2;
-                    % f = @(x) sum(abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) )))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2
+                    % f = @(x)abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) ))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2;
+                    f = @(x) sum( ...
+                        abs((x / Vr - exp(((tau(II) - eta * x ) ./ (si(II)) - fr - b(II) .* log(thetag(II) / (L / Vr)))./a(II)))) ./ ...
+                        abs((Vr / Vr - exp(((tau(II) - eta * Vr ) ./ (si(II)) - fr - b(II) .* log(thetag(II) / (L / Vr)))./a(II)))) ...
+                        );%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2
                 else
-                    f = @(x)abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II)));
-                    % f = @(x) sum(abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II))));
+                    % f = @(x)abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II)));
+                    f = @(x) sum( ...
+                        abs(x / Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II))) ./ ...
+                        abs(Vr / Vr - 2 * sinh((((tau(II) - eta * Vr) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II))) ...
+                        );
                 end
-                VT = zeros(15,length(II));
-                VpT = Vg(II);
-                fact = 1 + 0.03*((linspace(-1,1,15)).^5) ;%linspace(0.98,1.03,length(VT(:,1)));
-
-                % Can be parrelized
-                for iII = 1:length(VT(:,1))
-                    VT(iII,:) = f(fact(iII)*VpT);
-                end
-                if length(VT(1,:))>1
-                    [~,imin] = min(VT,[],1);
-                else
-                    [~,imin] = min(VT,[],1);
-                end
-                V(II) = VpT.*fact(imin)';
-                V(I) =   (Vr*exp( ( (tau(I)-eta*Vg(I))./(si(I)) - fr - b(I).*log(thetag(I)/(L/Vr)))./a(I)) );
-                % options = optimset('TolFun', 1.e-14, 'TolX', 1.e-14);
-                % [VpT, FpT000] = fminsearch(f, Vg(II), options); 
-                % V(II) = VpT; 
+                % VT = zeros(15,length(II));
+                % VpT = Vg(II);
+                % fact = 1 + 0.03*((linspace(-1,1,15)).^5) ;%linspace(0.98,1.03,length(VT(:,1)));
+                % 
+                % % Can be parrelized
+                % for iII = 1:length(VT(:,1))
+                %     VT(iII,:) = f(fact(iII)*VpT);
+                % end
+                % if length(VT(1,:))>1
+                %     [~,imin] = min(VT,[],1);
+                % else
+                %     [~,imin] = min(VT,[],1);
+                % end
+                % V(II) = VpT.*fact(imin)';
+                % V(I) =   (Vr*exp( ( (tau(I)-eta*Vg(I))./(si(I)) - fr - b(I).*log(thetag(I)/(L/Vr)))./a(I)) );
+                options = optimset('TolFun', 1.e-14, 'TolX', 1.e-14);
+                [VpT, FpT000] = fminsearch(f, Vg(II), options); 
+                V(II) = VpT; 
 
                 if FHFlag == 0
                     % Regularized friction law
@@ -962,7 +968,7 @@ function Regularized_cluster_diffusion_factors_flux_control(Nuu, Gamma, cc,...
                     InjectMaSave = InjectMaSave(:, 1:runnerplot - 1); 
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('../outputMats/', 'FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    filename = strcat('../outputMats/', 'ImFluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -973,7 +979,7 @@ function Regularized_cluster_diffusion_factors_flux_control(Nuu, Gamma, cc,...
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('../outputMats/', 'FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    txtname = strcat('../outputMats/', 'ImFluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1036,7 +1042,7 @@ function Regularized_cluster_diffusion_factors_flux_control(Nuu, Gamma, cc,...
     
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('../outputMats/', 'FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    filename = strcat('../outputMats/', 'ImFluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1047,7 +1053,7 @@ function Regularized_cluster_diffusion_factors_flux_control(Nuu, Gamma, cc,...
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('../outputMats/', 'FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    txtname = strcat('../outputMats/', 'ImFluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
     
