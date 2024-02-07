@@ -22,7 +22,7 @@ bulkc_factors = [1.];
 
 % Injection flux
 baseFlux = 1.0e-4;
-fluxes = baseFlux .* [1.0, 0.75, 0.5, 0.25];
+fluxes = baseFlux .* [1.0];
 
 
 %for i = 1:1:1

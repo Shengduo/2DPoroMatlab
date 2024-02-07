@@ -121,8 +121,8 @@ function Regularized_cluster_diffusion_factors_flux_control_implicit(Nuu, Gamma,
 
 
     NT = 30000000;% max number of time-steps
-    Vthres = 1.0e4; % threshold max(V)/Vo ratio at which an implicit step is taken
-    % Vthres = 0.;
+    % Vthres = 1.0e4; % threshold max(V)/Vo ratio at which an implicit step is taken
+    Vthres = 0.;
 
     %Vthres > 1.0e8, can cause spurious oscillations
 
@@ -667,13 +667,13 @@ function Regularized_cluster_diffusion_factors_flux_control_implicit(Nuu, Gamma,
                     % f = @(x)abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) ))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2;
                     f = @(x) sum( ...
                         abs((x / Vr - exp(((tau(II) - eta * x ) ./ (si(II)) - fr - b(II) .* log(thetag(II) / (L / Vr)))./a(II)))) ./ ...
-                        abs((Vr / Vr - exp(((tau(II) - eta * Vr ) ./ (si(II)) - fr - b(II) .* log(thetag(II) / (L / Vr)))./a(II)))) ...
+                        1. ...% abs((Vr / Vr - exp(((tau(II) - eta * Vr ) ./ (si(II)) - fr - b(II) .* log(thetag(II) / (L / Vr)))./a(II)))) ...
                         );%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2
                 else
                     % f = @(x)abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II)));
                     f = @(x) sum( ...
                         abs(x / Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II))) ./ ...
-                        abs(Vr / Vr - 2 * sinh((((tau(II) - eta * Vr) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II))) ...
+                        1. ...% abs(Vr / Vr - 2 * sinh((((tau(II) - eta * Vr) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II))) ...
                         );
                 end
                 % VT = zeros(15,length(II));
@@ -691,7 +691,7 @@ function Regularized_cluster_diffusion_factors_flux_control_implicit(Nuu, Gamma,
                 % end
                 % V(II) = VpT.*fact(imin)';
                 % V(I) =   (Vr*exp( ( (tau(I)-eta*Vg(I))./(si(I)) - fr - b(I).*log(thetag(I)/(L/Vr)))./a(I)) );
-                options = optimset('TolFun', 1.e-14, 'TolX', 1.e-14);
+                options = optimset('TolFun', 1.e-16, 'TolX', 1.e-16);
                 [VpT, FpT000] = fminsearch(f, Vg(II), options); 
                 V(II) = VpT; 
 
