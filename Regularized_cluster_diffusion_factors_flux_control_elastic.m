@@ -139,9 +139,9 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
     CNS = 1; % if larger than 1 the simulations may not fully resolve the shortest diffusion times, which typically depends on the
     %grid size, but will make them more efficient
 
-    maxdtfac = 2^(miniter-1) + 1.0;
+    maxdtfac = 2^(miniter-1) + 0.1;
     if miniter == 0
-        maxdtfac = 2.;
+        maxdtfac = 1.1;
     end
     Kit = 0;
 
@@ -319,6 +319,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
 
     % Change in total normal stress (sig_yy)
     siyy = dx;
+    siyyp = dx; 
 
     % Opening, and previous step opening
     dy = dx;
@@ -350,6 +351,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
 
     % Average pressure, calculated by (sigr + sigrn)/2
     pave = dx;
+    pavep = dx; 
 
 
     % Time history of a bunch of variables, at each kernel update
@@ -542,26 +544,46 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
         dtmax = 150 / 100;
         
         % Adapt injected mass accordingly
-        if it>2
-            % If Poroelastic
-            if Elastic_Flag ~= 1
-                % pcg = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - 2*INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
-                pcg_temp = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
-                % INjectma = (pcg_center - (pcg_temp(size(pcg_temp,1)/2) + pcg_temp(size(pcg_temp,1)/2+1))/2) ...
-                %     * (rhof0*phi*(bfp + bnp)) / max(INprofile);
-                pcg = pcg_temp + INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp));
+        % If Poroelastic
+        if Elastic_Flag ~= 1 
+            if it>2
+                    % pcg = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - 2*INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
+                    pcg_temp = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
+                    % INjectma = (pcg_center - (pcg_temp(size(pcg_temp,1)/2) + pcg_temp(size(pcg_temp,1)/2+1))/2) ...
+                    %     * (rhof0*phi*(bfp + bnp)) / max(INprofile);
+                    pcg = pcg_temp + INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp));
+                
             else
-                % pcg = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - 2*INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
-                pcg_temp = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
-
-                % INjectma = (pcg_center - (pcg_temp(size(pcg_temp,1)/2) + pcg_temp(size(pcg_temp,1)/2+1))/2) ...
+                % INjectma = (pcg_center - (pc(size(pc,1)/2) + pc(size(pc,1)/2+1))/2) ...
                 %     * (rhof0*phi*(bfp + bnp)) / max(INprofile);
-                pcg = pcg_temp + INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp));
+                pcg = pc + INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp));
             end
+        
+        % Elastic case
         else
-            % INjectma = (pcg_center - (pc(size(pc,1)/2) + pc(size(pc,1)/2+1))/2) ...
-            %     * (rhof0*phi*(bfp + bnp)) / max(INprofile);
-            pcg = pc + INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp));
+            RHS = pcp - (bfs - bns)./(bfp + bnp) .* (siyy - siyyp) ...
+                      - (dphi - dphip) ./ (phi*(bfp + bnp)) ...
+                      + (INjectmass(t+dt) - INjectmass(t)) * INprofile./(rhof0*phi*(bfp + bnp)) ...
+                      ;
+            M = spdiags(1 + dt*(2*KB/DX)*ones(length(x),1),0,length(x),length(x)) ...
+                + spdiags(-dt * KB/DX * ones(length(x),2),[-1 1],length(x),length(x));
+            M(1,length(x)) = -dt*(KB)/DX;
+            M(length(x),1) = -dt*(KB)/DX;
+            pcg = M \ RHS; 
+            % pavepn = [pave(end);pave(1:end-1)];
+            % pavemn = [pave(2:end);pave(1)];
+            % pavepp = [pavep(end);pavep(1:end-1)];
+            % pavemp = [pavep(2:end);pavep(1)];
+            % pcpp = [pcp(end);pcp(1:end-1)];
+            % pcmp = [pcp(2:end);pcp(1)];
+            % 
+            % LK = - KB*KDdp - 0.5*KB*dt*(pcpp - 2*pcp + pcmp + pavepp - 2*pavep + pavemp + pavepn - 2*pave + pavemn)/DX;
+            % 
+            % M = spdiags(1+0.5*dt*(2*KB/DX)*ones(length(x),1),0,length(x),length(x)) + spdiags(-0.5*dt*KB/DX*ones(length(x),2),[-1 1],length(x),length(x));
+            % M(1,length(x)) = -0.5*dt*(KB)/DX;
+            % M(length(x),1) = -0.5*dt*(KB)/DX;
+            % 
+            % pcg = M\(- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) + LK ));
         end
         
         dyg = dy + dt*(dy-dyp)/dtp;
@@ -575,6 +597,11 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
         pcp = pc;
         dyp = dy;
         dxp = dx;
+
+        % Update siyyp and dphip
+        siyyp = siyy; 
+        dphip = dphi;
+
         thetap = theta;
         KDp = KD;
         KDdp = KDd;
@@ -752,7 +779,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                 theta = L./Vm.*(Vm.*thetap/L).^(exp(-Vm*dt/L));
             end
             dphi = dphi0 - gamma*log(Vr.*theta/L);
-
             pave = 0.5*(sigr + sigrn);
             pavepn = [pave(end);pave(1:end-1)];
             pavemn = [pave(2:end);pave(1)];
@@ -766,21 +792,27 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
             % Poroelastic case
             if Elastic_Flag ~= 1
                 M = spdiags(1+0.5*dt*(KA+2*KB/DX)*ones(length(x),1),0,length(x),length(x)) + spdiags(-0.5*dt*KB/DX*ones(length(x),2),[-1 1],length(x),length(x));
-            
+                M(1,length(x)) = -0.5*dt*(KB)/DX;
+                M(length(x),1) = -0.5*dt*(KB)/DX;
             % Elastic case
             else
-                M = spdiags(1+0.5*dt*(2*KB/DX)*ones(length(x),1),0,length(x),length(x)) + spdiags(-0.5*dt*KB/DX*ones(length(x),2),[-1 1],length(x),length(x));
+                M = spdiags(1+dt*(2*KB/DX)*ones(length(x),1),0,length(x),length(x)) ...
+                    + spdiags(-dt*KB/DX*ones(length(x),2),[-1 1],length(x),length(x));
             end
 
-            M(1,length(x)) = -0.5*dt*(KB)/DX;
-            M(length(x),1) = -0.5*dt*(KB)/DX;
+
             
             % Elastic case
             if Elastic_Flag ~= 1
                 pc = M\(- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KDp - 0.5*KA*dt*(pave + pavep - pcp) + LK ));
             else
-                pc = M\(- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) + LK ));
+                RHS = pcp - (bfs - bns)./(bfp + bnp) .* (siyy - siyyp) ...
+                      - (dphi - dphip) ./ (phi*(bfp + bnp)) ...
+                      + (INjectmass(t+dt) - INjectmass(t)) * INprofile./(rhof0*phi*(bfp + bnp)) ...
+                      ;
+                pc = M \ RHS; 
             end
+
             pm = 0.5*(pc + 0.5*(sigr + sigrn));
             dy = 2*epsi*(phi/(1-phi)*bnp - bgp).*(pm - (phi/(1-phi)*bns - bgs)./(phi/(1-phi)*bnp - bgp).*siyy) + 2*epsi*dphi/(1-phi);
             dx = dxp + dt*Vm;
@@ -800,12 +832,17 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                 KD(:) = 0.;
                 sigr = pc;
                 sigrn = pc; 
+                pave = 0.5*(sigr + sigrn);
+                pavepn = [pave(end);pave(1:end-1)];
+                pavemn = [pave(2:end);pave(1)];
+                pavepp = [pavep(end);pavep(1:end-1)];
+                pavemp = [pavep(2:end);pavep(1)];
+                pcpp = [pcp(end);pcp(1:end-1)];
+                pcmp = [pcp(2:end);pcp(1)];
             end 
             
             KDd = KDdp + 0.5*dt*( pcpn -2*pc + pcmn + pcpp - 2*pcp + pcmp + pavepp - 2*pavep + pavemp + pavepn - 2*pave + pavemn)/DX;
             
-            
-
             if (tryagaincount < miniter || max(abs((pc-pcg))./(a.*si0)) > 0.1*frac || norm(pc-pcg,1)/(norm(pc,1)+1) > 0.1*frac) && tryagaincount < 10
 
                 tryagain = 1;
@@ -826,7 +863,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                     maxtolvio = accuracyabs;
                     maxtolviotime = t;
                 end
-
             end
 
 
@@ -1059,7 +1095,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                 if dt > maxdtfac*dtp
                     dt = maxdtfac*dtp;
                 end
-
             end
         end
         
