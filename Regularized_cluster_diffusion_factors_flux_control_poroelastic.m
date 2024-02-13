@@ -522,9 +522,23 @@ function Regularized_cluster_diffusion_factors_flux_control_poroelastic(Nuu, ...
 
     % Define the function for implicit calculation of V
     function [f, dfdV] = cal_V(V_sol, sigma, tau, theta)
+        % f = (tau - eta .* V_sol) ./ sigma ...
+        %     - fr - a(d0 == 1) .* log(V_sol ./ Vr) - b(d0 == 1) .* log(Vr .* theta ./ L);
+        % dfdV = spdiags(-eta ./ sigma - a(d0 == 1) ./ V_sol, 0, length(V_sol), length(V_sol));
+        
+        % Regularized friction law
+        Q = 0.5 * V_sol ./ Vr .* exp((fr + b(d0 == 1) .* log(Vr .* theta ./ L)) ./ a(d0 == 1)); 
+        
         f = (tau - eta .* V_sol) ./ sigma ...
-            - fr - a(d0 == 1) .* log(V_sol ./ Vr) - b(d0 == 1) .* log(Vr .* theta ./ L);
-        dfdV = spdiags(-eta ./ sigma - a(d0 == 1) ./ V_sol, 0, length(V_sol), length(V_sol));
+            - a(d0 == 1) .* asinh( ...
+                Q ...
+            );
+        
+        coeff = Q ./ sqrt(1 + Q .^2);
+        coeff(abs(Q) > 1.e20) = sign(Q(abs(Q) > 1.e20));
+        coeff(abs(Q) < 1.e-20) = Q(abs(Q) < 1.e-20);
+
+        dfdV = spdiags(-eta ./ sigma - a(d0 == 1) ./ V_sol .* coeff, 0, length(V_sol), length(V_sol));
     end
 
     % Main loop cannot be parallelized
