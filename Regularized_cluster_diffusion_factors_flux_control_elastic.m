@@ -138,11 +138,10 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
     %should here represent the average NS in the simulation.
     CNS = 1; % if larger than 1 the simulations may not fully resolve the shortest diffusion times, which typically depends on the
     %grid size, but will make them more efficient
+    
+    % dt(n + 1) / dt(n) <= maxdtfac
+    maxdtfac = 1.5; 
 
-    maxdtfac = 2^(miniter-1) + 0.1;
-    if miniter == 0
-        maxdtfac = 1.1;
-    end
     Kit = 0;
 
     %defines a loading region, for compatison with JMPS we make this logical
@@ -780,7 +779,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
             % Solve for V;
             myFun = @(V_sol) cal_V(V_sol, si(d0 == 1), tau(d0 == 1), thetag(d0 == 1)); 
             myOpts = optimoptions('fsolve','SpecifyObjectiveGradient',true, ...
-                                  'FunctionTolerance', 1.e-6 * a(1) * min(si) / si0, ...
+                                  'FunctionTolerance', min(1.e-6 .* a), ...
                                   'Display', 'off');
             
             V_sol = fsolve(myFun, Vg(d0 == 1), myOpts);
@@ -1053,7 +1052,10 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
 
                 end
 
-                if isnan(sum(V))
+                if (isnan(sum(V)) ||  min(si) <= 0.)
+                    disp(strcat("sum(V): ", num2str(sum(V))));
+                    disp(strcat("min(si): ", num2str(min(si))));
+
                     % Truncate the zero endings
                     Vsave = Vsave(:,1:runnerplot - 1);
                     dsave = dsave(:,1:runnerplot - 1);
@@ -1068,7 +1070,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                     InjectMaSave = InjectMaSave(:, 1:runnerplot - 1); 
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('../outputMats/', 'Elastic_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    filename = strcat('../outputMats/', 'ElasticFlag_', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1079,7 +1081,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('../outputMats/', 'Elastic_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    txtname = strcat('../outputMats/', 'ElasticFlag_', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1099,7 +1101,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                     fprintf(fileID, '\n%25s', 'kappacx:'); fprintf(fileID, num2str(kappacx));
                     fprintf(fileID, '\n%25s', 'c:'); fprintf(fileID, num2str(c));
                     fclose(fileID);
-                    disp('NaN detected in V!');
                     disp(strcat('Gamma = ', num2str(gamma)));
                     return;
                 end
@@ -1107,10 +1108,8 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                 dtp = dt;
 
                 % Reset dt for the next time step
-                dt = min([frac*min([L./max(V)]), dtmax]);
-                if dt > maxdtfac*dtp
-                    dt = maxdtfac*dtp;
-                end
+                dt = min([1/2 * min([L./max(V)]), dtmax, maxdtfac * dtp]);
+
             end
         end
         
@@ -1141,7 +1140,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
     
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('../outputMats/', 'Elastic_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    filename = strcat('../outputMats/', 'ElasticFlag_', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1152,7 +1151,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('../outputMats/', 'Elastic_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    txtname = strcat('../outputMats/', 'ElasticFlag_', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
     
