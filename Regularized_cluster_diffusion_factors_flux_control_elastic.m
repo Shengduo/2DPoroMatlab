@@ -1108,7 +1108,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                 dtp = dt;
 
                 % Reset dt for the next time step
-                dt = min([1/2 * min([L./max(V)]), dtmax, maxdtfac * dtp]);
+                dt = min([1/4 * min([L./max(V)]), dtmax, maxdtfac * dtp]);
 
             end
         end
