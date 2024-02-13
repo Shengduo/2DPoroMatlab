@@ -782,6 +782,13 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                                   'FunctionTolerance', min(1.e-6 .* a), ...
                                   'Display', 'off');
             
+            if isnan(sum(Vg)) || isnan(sum(si)) || isnan(sum(tau)) || isnan(sum(thetag))
+                disp(strcat("sum(Vg): ", num2str(sum(Vg)))); 
+                disp(strcat("sum(si): ", num2str(sum(si)))); 
+                disp(strcat("sum(tau): ", num2str(sum(tau)))); 
+                disp(strcat("sum(thetag): ", num2str(sum(thetag)))); 
+            end
+            
             V_sol = fsolve(myFun, Vg(d0 == 1), myOpts);
             V(d0 == 1) = V_sol; 
             % V = V.*d0 + Vo.*d00;
