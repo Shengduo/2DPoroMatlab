@@ -782,11 +782,15 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                                   'FunctionTolerance', min(1.e-6 .* a), ...
                                   'Display', 'off');
             
-            if isnan(sum(Vg)) || isnan(sum(si)) || isnan(sum(tau)) || isnan(sum(thetag))
+            if isnan(sum(Vg)) || isnan(sum(si)) || isnan(sum(tau)) || isinf(sum(thetag)) || isinf(sum(Vg)) || isinf(sum(si)) || isinf(sum(tau)) || isinf(sum(thetag))
                 disp(strcat("sum(Vg): ", num2str(sum(Vg)))); 
                 disp(strcat("sum(si): ", num2str(sum(si)))); 
                 disp(strcat("sum(tau): ", num2str(sum(tau)))); 
                 disp(strcat("sum(thetag): ", num2str(sum(thetag)))); 
+            end
+            
+            if any(Vg == 0) 
+                disp("Vg has zero entry!")
             end
             
             V_sol = fsolve(myFun, Vg(d0 == 1), myOpts);
@@ -1115,7 +1119,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                 dtp = dt;
 
                 % Reset dt for the next time step
-                dt = min([1/4 * min([L./max(V)]), dtmax, maxdtfac * dtp]);
+                dt = min([1/16 * min([L./max(V)]), dtmax, maxdtfac * dtp]);
 
             end
         end
