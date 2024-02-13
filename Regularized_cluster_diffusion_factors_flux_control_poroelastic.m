@@ -1,4 +1,4 @@
-function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ... 
+function Regularized_cluster_diffusion_factors_flux_control_poroelastic(Nuu, ... 
                     Gamma, cc, ...
                     FHFlag, poreflag, factors, flux)
     %% factors: 
@@ -25,7 +25,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
     
     %% IMPORTANT: ELASTIC FLAG: 1, elastic; 0, normal; 
     % Elastic by default uses nu_u
-    Elastic_Flag = 1; 
+    Elastic_Flag = 0; 
     
     % Terminating slip rate and simulating time
     Terminating_slip_rate = 1.0e-1;
