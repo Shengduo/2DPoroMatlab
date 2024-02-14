@@ -520,26 +520,26 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
     maxtolvio = 0;
     cumutolvio = 0;
 
-    % Define the function for implicit calculation of V
-    function [f, dfdV] = cal_V(V_sol, sigma, tau, theta)
-        % f = (tau - eta .* V_sol) ./ sigma ...
-        %     - fr - a(d0 == 1) .* log(V_sol ./ Vr) - b(d0 == 1) .* log(Vr .* theta ./ L);
-        % dfdV = spdiags(-eta ./ sigma - a(d0 == 1) ./ V_sol, 0, length(V_sol), length(V_sol));
-        
-        % Regularized friction law
-        Q = 0.5 * V_sol ./ Vr .* exp((fr + b(d0 == 1) .* log(Vr .* theta ./ L)) ./ a(d0 == 1)); 
-        
-        f = (tau - eta .* V_sol) ./ sigma ...
-            - a(d0 == 1) .* asinh( ...
-                Q ...
-            );
-        
-        coeff = Q ./ sqrt(1 + Q .^2);
-        coeff(abs(Q) > 1.e20) = sign(Q(abs(Q) > 1.e20));
-        coeff(abs(Q) < 1.e-20) = Q(abs(Q) < 1.e-20);
-
-        dfdV = spdiags(-eta ./ sigma - a(d0 == 1) ./ V_sol .* coeff, 0, length(V_sol), length(V_sol));
-    end
+    % % Define the function for implicit calculation of V
+    % function [f, dfdV] = cal_V(V_sol, sigma, tau, theta)
+    %     % f = (tau - eta .* V_sol) ./ sigma ...
+    %     %     - fr - a(d0 == 1) .* log(V_sol ./ Vr) - b(d0 == 1) .* log(Vr .* theta ./ L);
+    %     % dfdV = spdiags(-eta ./ sigma - a(d0 == 1) ./ V_sol, 0, length(V_sol), length(V_sol));
+    % 
+    %     % Regularized friction law
+    %     Q = 0.5 * V_sol ./ Vr .* exp((fr + b(d0 == 1) .* log(Vr .* theta ./ L)) ./ a(d0 == 1)); 
+    % 
+    %     f = (tau - eta .* V_sol) ./ sigma ...
+    %         - a(d0 == 1) .* asinh( ...
+    %             Q ...
+    %         );
+    % 
+    %     coeff = Q ./ sqrt(1 + Q .^2);
+    %     coeff(abs(Q) > 1.e20) = sign(Q(abs(Q) > 1.e20));
+    %     coeff(abs(Q) < 1.e-20) = Q(abs(Q) < 1.e-20);
+    % 
+    %     dfdV = spdiags(-eta ./ sigma - a(d0 == 1) ./ V_sol .* coeff, 0, length(V_sol), length(V_sol));
+    % end
 
     % Main loop cannot be parallelized
     for it = 2:NT
@@ -741,74 +741,74 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
             si(Isineg) = 1;
             tau(Isineg) = 0;
 
-            % % If Vg large enough, use implicit method to determine V
-            % if max(Vg)/Vr >= Vthres % && rem(i,1)==0
-            %     I = (Vg/Vr < Vthres) & (d0 == 1);
-            %     II = find(Vg/Vr >= Vthres);
-            %     if FHFlag == 0
-            %         f = @(x)abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) ))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2;
-            %         % f = @(x) sum(abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) )))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2
-            %     else
-            %         f = @(x)abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II)));
-            %         % f = @(x) sum(abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II))));
-            %     end
-            %     VT = zeros(15,length(II));
-            %     VpT = Vg(II);
-            %     fact = 1 + 0.03*((linspace(-1,1,15)).^5) ;%linspace(0.98,1.03,length(VT(:,1)));
-            % 
-            %     % Can be parrelized
-            %     for iII = 1:length(VT(:,1))
-            %         VT(iII,:) = f(fact(iII)*VpT);
-            %     end
-            %     if length(VT(1,:))>1
-            %         [~,imin] = min(VT,[],1);
-            %     else
-            %         [~,imin] = min(VT,[],1);
-            %     end
-            %     V(II) = VpT.*fact(imin)';
-            %     V(I) =   (Vr*exp( ( (tau(I)-eta*Vg(I))./(si(I)) - fr - b(I).*log(thetag(I)/(L/Vr)))./a(I)) );
-            %     % options = optimset('TolFun', 1.e-14, 'TolX', 1.e-14);
-            %     % [VpT, FpT000] = fminsearch(f, Vg(II), options); 
-            %     % V(II) = VpT; 
-            % 
-            %     if FHFlag == 0
-            %         % Regularized friction law
-            %         V(I) = 2 * Vr * sinh((tau(I) - eta * Vg(I)) ./ (si(I)) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
-            %     else
-            %         % Regularized friction law with flash heating
-            %         V(I) = 2 * Vr * sinh((((tau(I) - eta * Vg(I)) ./ (si(I)) - fw) .* (1 + L ./ thetag(I) ./ Vw) + fw) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
-            %     end
-            % % If Vg small, use explicit scheme
-            % else
-            %     %V = Vr*exp( ( (tau-eta*Vg)./(si) - fr - b.*log(thetag/(L/Vr)))./a) ;
-            %     if FHFlag == 0
-            %         % Regularized friction law
-            %         V = 2 * Vr * sinh((tau - eta * Vg) ./ (si) ./ a) ./ exp((fr + b .* log(Vr * thetag / L)) ./ a);
-            %     else
-            %         % Regularized friction law with flash heating
-            %         V = 2 * Vr * sinh((((tau - eta * Vg) ./ (si) - fw ) .* (1 + L ./ thetag ./ Vw) + fw) ./ a) ./ exp((fr + b .* log(Vr * thetag / L)) ./ a);
-            %     end
-            % end
+            % If Vg large enough, use implicit method to determine V
+            if max(Vg)/Vr >= Vthres % && rem(i,1)==0
+                I = (Vg/Vr < Vthres) & (d0 == 1);
+                II = find(Vg/Vr >= Vthres);
+                if FHFlag == 0
+                    f = @(x)abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) ))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2;
+                    % f = @(x) sum(abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) )))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2
+                else
+                    f = @(x)abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II)));
+                    % f = @(x) sum(abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II))));
+                end
+                VT = zeros(15,length(II));
+                VpT = Vg(II);
+                fact = 1 + 0.03*((linspace(-1,1,15)).^5) ;%linspace(0.98,1.03,length(VT(:,1)));
 
-            % Solve for V;
-            myFun = @(V_sol) cal_V(V_sol, si(d0 == 1), tau(d0 == 1), thetag(d0 == 1)); 
-            myOpts = optimoptions('fsolve','SpecifyObjectiveGradient',true, ...
-                                  'FunctionTolerance', min(1.e-12 .* a), ...
-                                  'Display', 'off');
-            
-            if isnan(sum(Vg)) || isnan(sum(si)) || isnan(sum(tau)) || isinf(sum(thetag)) || isinf(sum(Vg)) || isinf(sum(si)) || isinf(sum(tau)) || isinf(sum(thetag))
-                disp(strcat("sum(Vg): ", num2str(sum(Vg)))); 
-                disp(strcat("sum(si): ", num2str(sum(si)))); 
-                disp(strcat("sum(tau): ", num2str(sum(tau)))); 
-                disp(strcat("sum(thetag): ", num2str(sum(thetag)))); 
+                % Can be parrelized
+                for iII = 1:length(VT(:,1))
+                    VT(iII,:) = f(fact(iII)*VpT);
+                end
+                if length(VT(1,:))>1
+                    [~,imin] = min(VT,[],1);
+                else
+                    [~,imin] = min(VT,[],1);
+                end
+                V(II) = VpT.*fact(imin)';
+                V(I) =   (Vr*exp( ( (tau(I)-eta*Vg(I))./(si(I)) - fr - b(I).*log(thetag(I)/(L/Vr)))./a(I)) );
+                % options = optimset('TolFun', 1.e-14, 'TolX', 1.e-14);
+                % [VpT, FpT000] = fminsearch(f, Vg(II), options); 
+                % V(II) = VpT; 
+
+                if FHFlag == 0
+                    % Regularized friction law
+                    V(I) = 2 * Vr * sinh((tau(I) - eta * Vg(I)) ./ (si(I)) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
+                else
+                    % Regularized friction law with flash heating
+                    V(I) = 2 * Vr * sinh((((tau(I) - eta * Vg(I)) ./ (si(I)) - fw) .* (1 + L ./ thetag(I) ./ Vw) + fw) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
+                end
+            % If Vg small, use explicit scheme
+            else
+                %V = Vr*exp( ( (tau-eta*Vg)./(si) - fr - b.*log(thetag/(L/Vr)))./a) ;
+                if FHFlag == 0
+                    % Regularized friction law
+                    V = 2 * Vr * sinh((tau - eta * Vg) ./ (si) ./ a) ./ exp((fr + b .* log(Vr * thetag / L)) ./ a);
+                else
+                    % Regularized friction law with flash heating
+                    V = 2 * Vr * sinh((((tau - eta * Vg) ./ (si) - fw ) .* (1 + L ./ thetag ./ Vw) + fw) ./ a) ./ exp((fr + b .* log(Vr * thetag / L)) ./ a);
+                end
             end
-            
-            if any(Vg == 0) 
-                disp("Vg has zero entry!")
-            end
-            
-            V_sol = fsolve(myFun, Vg(d0 == 1), myOpts);
-            V(d0 == 1) = V_sol; 
+
+            % % Solve for V;
+            % myFun = @(V_sol) cal_V(V_sol, si(d0 == 1), tau(d0 == 1), thetag(d0 == 1)); 
+            % myOpts = optimoptions('fsolve','SpecifyObjectiveGradient',true, ...
+            %                       'FunctionTolerance', min(1.e-12 .* a), ...
+            %                       'Display', 'off');
+            % 
+            % if isnan(sum(Vg)) || isnan(sum(si)) || isnan(sum(tau)) || isinf(sum(thetag)) || isinf(sum(Vg)) || isinf(sum(si)) || isinf(sum(tau)) || isinf(sum(thetag))
+            %     disp(strcat("sum(Vg): ", num2str(sum(Vg)))); 
+            %     disp(strcat("sum(si): ", num2str(sum(si)))); 
+            %     disp(strcat("sum(tau): ", num2str(sum(tau)))); 
+            %     disp(strcat("sum(thetag): ", num2str(sum(thetag)))); 
+            % end
+            % 
+            % if any(Vg == 0) 
+            %     disp("Vg has zero entry!")
+            % end
+            % 
+            % V_sol = fsolve(myFun, Vg(d0 == 1), myOpts);
+            % V(d0 == 1) = V_sol; 
             % V = V.*d0 + Vo.*d00;
             Vm = 0.5*(Vp + V);
 
@@ -1133,7 +1133,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
                 dtp = dt;
 
                 % Reset dt for the next time step
-                dt = min([1/16 * min([L./max(V)]), dtmax, maxdtfac * dtp]);
+                dt = min([1./frac * L./max(V), dtmax, maxdtfac * dtp]);
 
             end
         end
