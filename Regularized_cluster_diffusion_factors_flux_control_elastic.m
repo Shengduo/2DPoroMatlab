@@ -809,7 +809,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
             % 
             % V_sol = fsolve(myFun, Vg(d0 == 1), myOpts);
             % V(d0 == 1) = V_sol; 
-            % V = V.*d0 + Vo.*d00;
+            V = V.*d0 + Vo.*d00;
             Vm = 0.5*(Vp + V);
 
             % Aging/Slipping law for state variable update
