@@ -140,7 +140,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic(Nuu, ...
     %grid size, but will make them more efficient
     
     % dt(n + 1) / dt(n) <= maxdtfac
-    maxdtfac = 1.5; 
+    maxdtfac = 1.1; 
 
     Kit = 0;
 
