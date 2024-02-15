@@ -201,8 +201,8 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, widef
     %% Friction coefficient plot
     axes(ha(1));
     % Compute friction coefficient: f = \tau / (\sigma - p);
-    friction_coeff = tauS ./ sisave; 
-    [X, Y] = meshgrid(time,x);
+    friction_coeff = tauS() ./ sisave; 
+    [X, Y] = meshgrid(tsaveplot,x);
     h=pcolor(X,Y,friction_coeff);
     shading interp;
     hold on; 
@@ -417,7 +417,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, widef
     % Compute shear stress
     % friction_coeff = tauS ./ sisave; 
     [X, Y] = meshgrid(time,x);
-    h=pcolor(X,Y,tauS ./ 1e6);
+    h=pcolor(X,Y,tauS(:, ind) ./ 1e6);
     shading interp;
     hold on; 
     

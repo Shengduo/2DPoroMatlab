@@ -167,8 +167,9 @@ files = files([11]);
 files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
          "FluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
          "FluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
-         "FluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... %4 
-         "shit1"];    % 5
+         "FluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 4 
+         "Elastic_FluxTime_0.0001_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 5
+         "shit4_1"];    % 6
 
 % % With higher initial slip rate
 % files = ["HighVoFluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
@@ -190,9 +191,9 @@ files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", .
 
 
 
-BigTs = [8000, 4000, 8000 / 3, 2000, 2000];
+BigTs = [8000, 4000, 8000 / 3, 2000, 2000, 2000];
 
-selected_to_plot = [5];
+selected_to_plot = [6];
 files = files(selected_to_plot);
 BigTs = BigTs(selected_to_plot);
 % wideflag = 1;
@@ -202,11 +203,11 @@ BigTs = BigTs(selected_to_plot);
 % files = ["WesterlyGranite_Reverted_gamma_0_pflag_3_kappacx_8.7584e-15"];
 for iiii = 1:1:files.length()
     % files(iiii) = strcat('../outputMats/', files(iiii));
-%     stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0);
-%     close all;
-%     
-%     stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 1);
-%     close all;
+    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0);
+    close all;
+
+    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 1);
+    close all;
 % 
 %     stacy_LnuVsPRegion(files(iiii), saveflag, 0, 1, BigTs(iiii));
 %     close all;
