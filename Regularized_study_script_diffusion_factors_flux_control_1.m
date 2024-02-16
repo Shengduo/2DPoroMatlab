@@ -24,6 +24,8 @@ bulkc_factors = [1.];
 baseFlux = 1.0e-4;
 fluxes = baseFlux .* [1.0];
 
+% Elastic flag, 1 - elastic, 0 - poroelastic
+Elastic_Flag = 1;
 
 %for i = 1:1:1
 for iii = 1:1:size(nuus, 2)
@@ -36,9 +38,9 @@ for iii = 1:1:size(nuus, 2)
                             factors = [kappacx_factors(lll), ...
                                        kappacy_factors(mmm), ...
                                        bulkc_factors(nnn)];
-                            Regularized_cluster_diffusion_factors_flux_control_elastic_2(nuus(iii), ...
+                            Regularized_cluster_diffusion_factors_flux_control_elastic_1(nuus(iii), ...
                                 gammas(jjj), ccs(kkk), FHFlag, 3, factors, ...
-                                fluxes(fff));
+                                fluxes(fff), Elastic_Flag);
                         end
                     end
                 end
