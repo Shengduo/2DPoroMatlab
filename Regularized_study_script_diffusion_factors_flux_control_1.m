@@ -13,7 +13,7 @@ gammas = [0];
 ccs = [1.0e-8];
 
 % No flash heating
-FHFlag = 1;
+FHFlag = 0;
 
 % All diffusion factors
 kappacx_factors = [1.];
