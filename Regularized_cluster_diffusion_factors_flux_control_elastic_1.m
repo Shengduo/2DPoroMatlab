@@ -171,12 +171,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     %material parameters
     nu = 0.24;
     nuu = Nuu;
-    
-    % For elastic limit
-    if Elastic_Flag == 1
-        nuu = nu;
-    end
-
     B = 0.85;
     G = 10e9;
     rhof0 = 1.0e3; %reference fluid density kg/m^3
@@ -194,9 +188,19 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     kappa = c/(2*G*(1+nu)*B / (3*alpB*(1-alpB*B)*(1-2*nu) ) );
     c = c*((1-nu)*(1-2*nuu) )/( (1-nuu)*(1-2*nu));
     
-    M = (2 * G * (nuu - nu)) / (alpB ^ 2 * (1 - 2 * nuu) * (1 - 2 * nu));
-    % kappa = c/( 2*G*(1-nu)/(1-2*nu) * (B*(1+nu))/((3*alpB*(1 - nu)-2*B*alpB^2*(1-2*nu))) );
-
+    % For elastic limit
+    if Elastic_Flag == 1
+        nuu = nu;
+        c = 0.; 
+    
+    % Elastic bulk but with permeability
+    elseif Elastic_Flag == 2
+        nuu = nu; 
+        alpB = 0.; 
+        B = 0.; 
+        c = cc * factors(3); 
+    end
+    
     %shear zone half thickness, doesn't really matter in comparing to JMPS
     %where the fault in completely impermeable
     epsi = 0.001;
@@ -684,13 +688,23 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
                         (K_var(:,2:end, ind_2(i)).*DD_var(:,2:end,ind_3(i))...
                         + K_var(:,1:end-1,ind_4(i)).*DD_var(:,1:end-1,ind_5(i))), 2);
                 end
-    
-                % Slightly modified to match variable names
-                taur =  real(ifft(ifftshift(( akdhat1.*(con_var(:,1)+F)))));
-                sigr =  real(ifft(ifftshift(( akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
-                sigrn = real(ifft(ifftshift((-akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
-                siyy =  -real(ifft(ifftshift(( akdhat4.*con_var(:,5) + akdhat1.*(con_var(:,6)+Fy)))));
-            
+                
+                % If fully poroelastic
+                if Elastic_Flag == 0
+                    % Slightly modified to match variable names
+                    taur =  real(ifft(ifftshift(( akdhat1.*(con_var(:,1)+F)))));
+                    sigr =  real(ifft(ifftshift(( akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
+                    sigrn = real(ifft(ifftshift((-akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
+                    siyy =  -real(ifft(ifftshift(( akdhat4.*con_var(:,5) + akdhat1.*(con_var(:,6)+Fy)))));
+                
+                % If the bulk is only permeable, not poroelastic (Elastic_Flag == 2)
+                else
+                    taur =  real(ifft(ifftshift(( akdhat1 .* F))));
+                    sigr =  real(ifft(ifftshift((akdhat3.*con_var(:,4)))));
+                    sigrn = sigr; 
+                    siyy =  -real(ifft(ifftshift((akdhat1 .* Fy))));
+                end
+
             else % Elastic case
                 % Slightly modified to match variable names
                 taur =  real(ifft(ifftshift(( akdhat1 .* F))));
@@ -823,7 +837,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
             pcpn = [pc(end);pc(1:end-1)];
             pcmn = [pc(2:end);pc(1)];
             
-            % IF poroelastic, no cross-fault fluid motion is allowed
+            % IF elastic, no cross-fault fluid motion is allowed
             if Elastic_Flag ~= 1
                 KD = KDp + 0.5*dt*(pave-pc + pavep-pcp);
             
