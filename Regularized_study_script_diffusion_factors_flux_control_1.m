@@ -24,8 +24,8 @@ bulkc_factors = [1.];
 baseFlux = 1.0e-4;
 fluxes = baseFlux .* [1.0];
 
-% Elastic flag, 1 - elastic, 0 - poroelastic
-Elastic_Flag = 1;
+% Elastic flag, 1 - elastic, 0 - poroelastic, 2 - half-poroelastic
+Elastic_Flag = 2;
 
 %for i = 1:1:1
 for iii = 1:1:size(nuus, 2)
