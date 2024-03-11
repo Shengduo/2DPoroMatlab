@@ -146,40 +146,40 @@ files = ["NewFH_0_nuu_0.242_gamma_0_pflag_3_c_4e-07_factor_1_BC_0.16586_3.297e-0
 % % files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_3_c_4e-08_factor_1_BC_0.85_4e-08"];
 % files = ["NewSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
 % files = ["NewTimeSiRegFH_0_nuu_0.35_gamma_0_pflag_6_c_4e-08_factor_1_BC_0.85_4e-08"];
-files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-08_factor_1"];
+% files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-08_factor_1"];
 
 %% Parametric study on diffusion parameters
-files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_10_10", ...
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_1_1", ...
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_1_10", ...
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_0.1_1", ...   % 5
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_0.1_1_1", ...
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_10_10", ...
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_10", ...
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_0.1", ...
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_0.1_0.1", ... % 10
-         "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_10_1"];    % 11
- 
-files = files([11]);
+% files = ["NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_10_10", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_1_1", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_10_1_10", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_0.1_1", ...   % 5
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_0.1_1_1", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_10_10", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_10", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_0.1", ...
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_0.1_0.1", ... % 10
+%          "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_10_1"];    % 11
+% 
+% files = files([2]);
 
 %% MassControl injection
-files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "FluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
-         "FluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
-         "FluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 4 
-         "Elastic_FluxTime_0.0001_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 5
-         "shit4_1", ... % 6
-         "Elastic_Flag0_FluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 7
-         "Elastic1_Flag0_FluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 8
-         "Elastic_Flag2_FluxTime_0.0001_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1_1"];    % 9
+% files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          "FluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
+%          "FluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
+%          "FluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 4 
+%          "Elastic_FluxTime_0.0001_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 5
+%          "shit4_1", ... % 6
+%          "Elastic_Flag0_FluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 7
+%          "Elastic1_Flag0_FluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 8
+%          "Elastic_Flag2_FluxTime_0.0001_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1_1"];    % 9
 
-% % With higher initial slip rate
-% files = ["HighVoFluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-%          "HighVoFluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
-%          "HighVoFluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
-%          "HighVoFluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];    % 4
-% 
+% With higher initial slip rate
+files = ["HighVoFluxTime_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+         "HighVoFluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
+         "HighVoFluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 3
+         "HighVoFluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];    % 4
+
 % % With VS rate-and-state friction
 % files = ["VsFluxTime_2.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 1
 %          "VsFluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ... % 2
@@ -196,9 +196,11 @@ files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", .
 
 BigTs = [8000, 4000, 8000 / 3, 2000, 2000, 2000, 2000, 2000, 2000];
 
-selected_to_plot = [9];
-files = files(selected_to_plot);
-BigTs = BigTs(selected_to_plot);
+% selected_to_plot = [9];
+% files = files(selected_to_plot);
+% BigTs = BigTs(selected_to_plot);
+files = files([1, 3]);
+BigTs = [2000, 4000];
 % wideflag = 1;
 
 %% Westerly Granite
@@ -206,11 +208,11 @@ BigTs = BigTs(selected_to_plot);
 % files = ["WesterlyGranite_Reverted_gamma_0_pflag_3_kappacx_8.7584e-15"];
 for iiii = 1:1:files.length()
     % files(iiii) = strcat('../outputMats/', files(iiii));
-    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0);
-    close all;
-
-    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 1);
-    close all;
+    % stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0);
+    % close all;
+    % 
+    % stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 1);
+    % close all;
 % 
 %     stacy_LnuVsPRegion(files(iiii), saveflag, 0, 1, BigTs(iiii));
 %     close all;

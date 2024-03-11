@@ -89,18 +89,18 @@ function center_VPres(prename, saveflag, BigT)
     end
     
     % Friction coefficient vs. slip
-    frange = [0, 1];
-    % drange = [0, 100];
+    frange = [0.4, 1];
+    drange = [0, 15];
     fig5 = figure(5);
     set(fig5, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
-    plot((dsave(size(dsave, 1)/2,:)+dsave(size(dsave, 1)/2 + 1,:))/(2e-6), (tauS(size(tauS, 1)/2,:)+tauS(size(tauS, 1)/2 + 1,:))./(sisave(size(sisave, 1)/2,:)+sisave(size(sisave, 1)/2 + 1,:)), 'linewidth', 3.0);
+    plot((dsave(size(dsave, 1)/2,:)+dsave(size(dsave, 1)/2 + 1,:))/(2e-3), (tauS(size(tauS, 1)/2,:)+tauS(size(tauS, 1)/2 + 1,:))./(sisave(size(sisave, 1)/2,:)+sisave(size(sisave, 1)/2 + 1,:)), 'linewidth', 3.0);
     hold on; grid on;
     xlim(drange);
     ylim(frange);
-    xlabel('Slip [$\mu$m]', 'interpreter', 'latex');
+    xlabel('Slip [mm]', 'interpreter', 'latex');
     ylabel('Friction coefficient', 'interpreter', 'latex');
-    title('Friction coefficient vs. slip at the center', 'interpreter', 'latex');
-    set(gca, 'Fontsize', fontsize);
+    % title('Friction coefficient vs. slip at the center', 'interpreter', 'latex');
+    set(gca, 'Fontsize', fontsize + 10);
     
     % Save the figure
     if saveflag == 1
