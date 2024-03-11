@@ -270,7 +270,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     %    (in_rate)*(t-1400)*heaviside(t-1400); % multiplies INprofile represents cumulative mass;
     %This is mathematically cleaner in the fluid mass balance
     %the source term is then INjectmass(t)*INprofile
-    load("./InjectMass.mat", "InjectMaSavesource", "tsaveplotsource");
+    %load("./InjectMass.mat", "InjectMaSavesource", "tsaveplotsource");
     % INjectmass = @(t) interp1(tsaveplotsource, InjectMaSavesource, t, "spline");
     INjectmass = @(t) flux * t;
     %%
