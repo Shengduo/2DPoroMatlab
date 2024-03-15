@@ -19,7 +19,7 @@ FHFlag = 0;
 kappacx_factors = [1.];
 kappacy_factors = [1.];
 bulkc_factors = [1.];
-verticalFlag = 1; 
+verticalFlags = [1, 0]; 
 
 %for i = 1:1:1
 for iii = 1:1:size(nuus, 2)
@@ -28,11 +28,13 @@ for iii = 1:1:size(nuus, 2)
             for lll = 1:1:size(kappacx_factors, 2)
                 for mmm = 1:1:size(kappacy_factors, 2)
                     for nnn = 1:1:size(bulkc_factors, 2)
-                        factors = [kappacx_factors(lll), ...
-                                   kappacy_factors(mmm), ...
-                                   bulkc_factors(nnn)];
-                        William_Regularized_cluster_diffusion_factors(nuus(iii), ...
-                            gammas(jjj), ccs(kkk), FHFlag, 3, factors, verticalFlag);
+                        for bbb = 1:1:size(verticalFlags, 2)
+                            factors = [kappacx_factors(lll), ...
+                                       kappacy_factors(mmm), ...
+                                       bulkc_factors(nnn)];
+                            William_Regularized_cluster_diffusion_factors(nuus(iii), ...
+                                gammas(jjj), ccs(kkk), FHFlag, 3, factors, verticalFlags(bbb));
+                        end
                     end
                 end
             end
