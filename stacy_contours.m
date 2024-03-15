@@ -30,9 +30,9 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, widef
     end
     Vcrange = [-13, 1];
     % Vcrange = [-7, 1];
-    xticks = 0:500 * (floor(BigT / 2000)):(BigT - 500); % xticks = 0:500:1500;
+    xticks = 0:800:2400; % 0:500 * (floor(BigT / 2000)):(BigT - 500); % xticks = 0:500:1500;
     Trange = [0, BigT]; % Trange = [0, 2000];
-    crange = [-2, 4];
+    crange = [-0.6, 1.2] %[-2, 4];
     if subtraction_flag == 0
         pcsave = pcsave + 1.912e5;
         psave = psave + 1.912e5;
@@ -53,7 +53,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, widef
     sisave = sisave(:, 1:timeend);
     tauS = tauS(:, 1:timeend);
     % Find the mask of 0.5 Mpa
-    pc_ = 0.5e6;
+    pc_ = 0.05e6; %0.5e6;
     mask_pc = zeros(2, size(psave, 2));
     for iiii =1:1:size(psave, 2)
         id = find(psave(:,iiii) > pc_);
@@ -86,7 +86,7 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, widef
     ylabel('x [m]','FontSize',fontsize, 'interpreter', 'latex')
     %colormap(ha(1),brewermap([],'REDBLUE'));
     % imagesc(peaks(250));
-    caxis([-4,4]);
+    caxis([-1.2, 1.2]); %caxis([-4,4]);
     c = colorbar;
     Map = bluewhitered(400);
     colormap(ha(1),Map([1:2:199 200:end],:));
