@@ -25,16 +25,20 @@ function William_Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, p
     if verticalFlag == 1
         load("./William_vertical.mat");
         tdata = tdata ./ 10.;
+        Pdata = Pdata * 1.e6;
     else
         load("./William_inclined.mat");
         tdata = tdata ./ 10.; 
+        Pdata = Pdata * 1.e6; 
     end
     fault_l = fault_l'; 
 
     % Terminating slip rate and simulating time
     Terminating_slip_rate = 1.0e-1;
     Terminating_time = tdata(end);% 2020;
-    
+    tdata = [tdata, tdata(end) + 10.]; 
+    Pdata = [Pdata, Pdata(:, end)];
+
     % Terminating time if in_mass = 0, 12 days
     %if in_mass == 0
     %    Terminating_time = 10000;
@@ -966,7 +970,7 @@ function William_Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, p
                     InjectMaSave = InjectMaSave(:, 1:runnerplot - 1); 
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('../outputMats/', 'William_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    filename = strcat('../outputMats/', 'William_NewFH_verticalFlag_', num2str(verticalFlag), '_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -977,7 +981,7 @@ function William_Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, p
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('../outputMats/', 'William_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    txtname = strcat('../outputMats/', 'William_NewFH_verticalFlag_', num2str(FHFlag), '_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1040,7 +1044,7 @@ function William_Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, p
     
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('../outputMats/', 'William_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    filename = strcat('../outputMats/', 'William_NewFH_verticalFlag_', num2str(verticalFlag), '_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1051,7 +1055,7 @@ function William_Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, p
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('../outputMats/', 'William_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    txtname = strcat('../outputMats/', 'William_NewFH_verticalFlag_', num2str(verticalFlag), '_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
     
