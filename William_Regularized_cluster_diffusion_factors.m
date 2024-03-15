@@ -1,9 +1,7 @@
-function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ... 
-                    Gamma, cc, ...
-                    FHFlag, poreflag, factors, flux, Elastic_Flag)
+function William_Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, poreflag, factors, verticalFlag)
     %% factors: 
-    % diffusivity factor for [kappacx, kappacy and c] of the bulk 
-    %% Problem setup 
+    % diffusivity factor for [kappacx, kappacy and c] of the bulk
+    %% Problem setup
     % IMPORTANT: This code modified to replicate Stacy's paper results with
     % INTERMEDIATE friction parameters
     % this code set up an injection problem into a fault into a region with a width of 30m. Fluid is injected at
@@ -23,19 +21,24 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     % t0 = cputime;
     tstart = tic;
     
-    %% IMPORTANT: ELASTIC FLAG: 1, elastic; 0, normal; 
-    % Elastic by default uses nu_u
-    % Elastic_Flag = 0; 
-    
+    % Load injection file
+    if verticalFlag == 1
+        load("./William_vertical.mat");
+        tdata = tdata ./ 10.;
+    else
+        load("./William_inclined.mat");
+        tdata = tdata ./ 10.; 
+    end
+    fault_l = fault_l'; 
+
     % Terminating slip rate and simulating time
     Terminating_slip_rate = 1.0e-1;
-    baseFlux = 1.0e-4; 
-    Terminating_time = baseFlux * 2020 / flux;
+    Terminating_time = tdata(end);% 2020;
     
     % Terminating time if in_mass = 0, 12 days
-    % if in_mass == 0
-    %     Terminating_time = 10000;
-    % end
+    %if in_mass == 0
+    %    Terminating_time = 10000;
+    %end
     %% IMPORTNANT: TIME-STEPPING SCALING: frac
     fract = 4; % used in frac to scale time-steps You may want to pick a smaller value
     % when trying things out to speed things up
@@ -127,8 +130,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
 
     NT = 30000000;% max number of time-steps
     Vthres = 1.0e4; % threshold max(V)/Vo ratio at which an implicit step is taken
-    % Vthres = 0.;
-
     %Vthres > 1.0e8, can cause spurious oscillations
 
     MAXNS = inf; %maximum number of timesteps needed for a kernel update
@@ -188,19 +189,9 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     kappa = c/(2*G*(1+nu)*B / (3*alpB*(1-alpB*B)*(1-2*nu) ) );
     c = c*((1-nu)*(1-2*nuu) )/( (1-nuu)*(1-2*nu));
     
-    % For elastic limit
-    if Elastic_Flag == 1
-        nuu = nu;
-        c = 0.; 
-    
-    % Elastic bulk but with permeability
-    elseif Elastic_Flag == 2
-        nuu = nu; 
-        alpB = 0.; 
-        B = 0.; 
-        c = cc * factors(3); 
-    end
-    
+    M = (2 * G * (nuu - nu)) / (alpB ^ 2 * (1 - 2 * nuu) * (1 - 2 * nu));
+    % kappa = c/( 2*G*(1-nu)/(1-2*nu) * (B*(1+nu))/((3*alpB*(1 - nu)-2*B*alpB^2*(1-2*nu))) );
+
     %shear zone half thickness, doesn't really matter in comparing to JMPS
     %where the fault in completely impermeable
     epsi = 0.001;
@@ -253,14 +244,14 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     %center = 0;
     %INprofile =  (1/(2*epsi*sigma*sqrt(2*pi))*exp(-0.5*((x-center)/sigma).^2))';
     %boxcar injector
-    lhs = - 0.5;
-    rhs = 0.5;
+    lhs = fault_l(1); % - 0.5;
+    rhs = fault_l(end); % 0.5;
     %source term relative volume per unit length, should normalize to
     %1/2*epsi
 
 
     INprofile =  (heaviside(x - lhs).*heaviside(- x + rhs)/(2*epsi*(rhs-lhs)))';
-
+    INGrid = (INprofile > 0.);
 
     %%% NOTICE used to be volume and is now mass:
     % Injection over 1400s
@@ -270,9 +261,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     %    (in_rate)*(t-1400)*heaviside(t-1400); % multiplies INprofile represents cumulative mass;
     %This is mathematically cleaner in the fluid mass balance
     %the source term is then INjectmass(t)*INprofile
-    %load("./InjectMass.mat", "InjectMaSavesource", "tsaveplotsource");
-    % INjectmass = @(t) interp1(tsaveplotsource, InjectMaSavesource, t, "spline");
-    INjectmass = @(t) flux * t;
     %%
     % Initialize the state variable with small noise around steady state
     % NOTE that this is not the same noise as in the JMPS paper so you will see
@@ -323,7 +311,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
 
     % Change in total normal stress (sig_yy)
     siyy = dx;
-    siyyp = dx; 
 
     % Opening, and previous step opening
     dy = dx;
@@ -355,7 +342,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
 
     % Average pressure, calculated by (sigr + sigrn)/2
     pave = dx;
-    pavep = dx; 
 
 
     % Time history of a bunch of variables, at each kernel update
@@ -404,11 +390,11 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     tsaveplot = zeros(1,NT/NSplot + 1);
 
     % Injection masses
-    InjectMaSave = zeros(1, NT/NSplot + 1);
+    InjectMaSave = zeros(length(x), NT/NSplot + 1);
 
 
     %% Compute kernels
-    FF = @(k)(kappac./(kappa*epsi*abs(k)));
+    FF =  @(k)(kappac./(kappa*epsi*abs(k)));
     G1 = @(t,k)(- 2*(nuu-nu)/(1-nu)*c*k.^2.*(1 + FF(k)).*(1 + 1./(FF(k)-1) .* (FF(k).* (exp((FF(k).^2 - 1).*c*k.^2*t).*erfc(FF(k).*sqrt(c*k.^2*t)) - 1) + erf(sqrt(c*k.^2*t))) ));
     G2 = @(t,k)(- c*k.^2.* (1 + FF(k)).*( exp(-c*k.^2*t)./sqrt(pi*c*k.^2*t) - FF(k).*exp((FF(k).^2 - 1).*c*k.^2*t).*erfc(FF(k).*sqrt(c*k.^2*t)) )       );
 
@@ -486,9 +472,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
 
     FFoFF(isinf(FFoFF) | isnan(FFoFF)) = 1;
 
-    if Elastic_Flag == 1
-        FFoFF(:) = 1.;
-    end
     %% various things are computed outside the loop to save time:
     dhat =     exp(1i*kv.*(x-0.5*((N+1)/Fs))); %!
     dhat2 =    filter.*exp(1i*(kv.*(x-0.5*((N+1)/Fs))));
@@ -524,70 +507,46 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     counter = 0;
     maxtolvio = 0;
     cumutolvio = 0;
+    
+    % For the Injection Grid
+    [fault_l_grid, tdata_grid] = meshgrid(fault_l, tdata); 
 
     % Main loop cannot be parallelized
     for it = 2:NT
         tryagaincount = 0;
         enter = 1;
-
         %% guess
+
+
         DX = (x(2)-x(1))^2;
         
-        % Prescribed pc at the center of the injection
-        if t + dt > 2144.2
-            pcg_center = -191216.9;
-        elseif t + dt > 1400
-            pcg_center = -4544.5*(t+dt)+9553100;
-        elseif t + dt > 1250
-            pcg_center = 3190800;            
-        else
-            pcg_center = -2.073*(t + dt)^2+5144*(t+dt); % + 1.912e5; 
-        end
+        % % Prescribed pc at the center of the injection
+        % if t + dt > 2144.2
+        %     pcg_center = -191216.9;
+        % elseif t + dt > 1400
+        %     pcg_center = -4544.5*(t+dt)+9553100;
+        % elseif t + dt > 1250
+        %     pcg_center = 3190800;            
+        % else
+        %     pcg_center = -2.073*(t + dt)^2+5144*(t+dt); % + 1.912e5; 
+        % end
+        pcg_center = zeros(size(pc));
+        [INjection_x_grid, t_plus_dt_grid] = meshgrid(x(INGrid), t+dt);
+        pcg_center(INGrid) = interp2(fault_l_grid, tdata_grid, Pdata', INjection_x_grid, t_plus_dt_grid);
         
         % Resolve the injection process, maximum increment in one step
         dtmax = 150 / 100;
-        
         % Adapt injected mass accordingly
-        % If Poroelastic
-        if Elastic_Flag ~= 1 
-            if it>2
-                    % pcg = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - 2*INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
-                    pcg_temp = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
-                    % INjectma = (pcg_center - (pcg_temp(size(pcg_temp,1)/2) + pcg_temp(size(pcg_temp,1)/2+1))/2) ...
-                    %     * (rhof0*phi*(bfp + bnp)) / max(INprofile);
-                    pcg = pcg_temp + INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp));
-                
-            else
-                % INjectma = (pcg_center - (pc(size(pc,1)/2) + pc(size(pc,1)/2+1))/2) ...
-                %     * (rhof0*phi*(bfp + bnp)) / max(INprofile);
-                pcg = pc + INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp));
-            end
-        
-        % Elastic case
+        if it>2
+            % pcg = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - 2*INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
+            pcg_temp = (- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - KA*KD - KA*dt*(pave - pc) - KB*KDd - KB*dt*( pcpn -2*pc + pcmn + pavepn - 2*pave + pavemn)/DX ));
+            INjectma = (pcg_center - pcg_temp) ...
+                * (rhof0*phi*(bfp + bnp)) .* INGrid;
+            pcg = pcg_temp + INjectma .* INGrid./(rhof0*phi*(bfp + bnp));
         else
-            RHS = pcp - (bfs - bns)./(bfp + bnp) .* (siyy - siyyp) ...
-                      - (dphi - dphip) ./ (phi*(bfp + bnp)) ...
-                      + (INjectmass(t+dt) - INjectmass(t)) * INprofile./(rhof0*phi*(bfp + bnp)) ...
-                      ;
-            M = spdiags(1 + dt*(2*KB/DX)*ones(length(x),1),0,length(x),length(x)) ...
-                + spdiags(-dt * KB/DX * ones(length(x),2),[-1 1],length(x),length(x));
-            M(1,length(x)) = -dt*(KB)/DX;
-            M(length(x),1) = -dt*(KB)/DX;
-            pcg = M \ RHS; 
-            % pavepn = [pave(end);pave(1:end-1)];
-            % pavemn = [pave(2:end);pave(1)];
-            % pavepp = [pavep(end);pavep(1:end-1)];
-            % pavemp = [pavep(2:end);pavep(1)];
-            % pcpp = [pcp(end);pcp(1:end-1)];
-            % pcmp = [pcp(2:end);pcp(1)];
-            % 
-            % LK = - KB*KDdp - 0.5*KB*dt*(pcpp - 2*pcp + pcmp + pavepp - 2*pavep + pavemp + pavepn - 2*pave + pavemn)/DX;
-            % 
-            % M = spdiags(1+0.5*dt*(2*KB/DX)*ones(length(x),1),0,length(x),length(x)) + spdiags(-0.5*dt*KB/DX*ones(length(x),2),[-1 1],length(x),length(x));
-            % M(1,length(x)) = -0.5*dt*(KB)/DX;
-            % M(length(x),1) = -0.5*dt*(KB)/DX;
-            % 
-            % pcg = M\(- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) + LK ));
+            INjectma = (pcg_center - pc) ...
+                * (rhof0*phi*(bfp + bnp)) .* INGrid;
+            pcg = pc + INjectma .* INGrid ./ (rhof0*phi*(bfp + bnp));
         end
         
         dyg = dy + dt*(dy-dyp)/dtp;
@@ -601,11 +560,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
         pcp = pc;
         dyp = dy;
         dxp = dx;
-
-        % Update siyyp and dphip
-        siyyp = siyy; 
-        dphip = dphi;
-
         thetap = theta;
         KDp = KD;
         KDdp = KDd;
@@ -616,6 +570,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
 
             % If this is the first attempt
             if enter == 1
+
                 F =  fftshift(fft(dxg))/N;
                 Fy = fftshift(fft(dyg))/N;
                 Fp = fftshift(fft(pcg))/N;
@@ -668,50 +623,29 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
             %sigconp  = -TT(:,end).*K2(:,end).*PPT(:,end) +  0.5*sum((TT(:,2:end) - TT(:,1:end-1) ).*(K2(:,2:end).*PPT(:,2:end) + K2(:,1:end-1).*PPT(:,1:end-1)),2);
             %sigyycon = -TT(:,end).*K1(:,end).*PPT(:,end) +  0.5*sum((TT(:,2:end) - TT(:,1:end-1) ).*(K1(:,2:end).*PPT(:,2:end) + K1(:,1:end-1).*PPT(:,1:end-1)),2);
             %sigyycony= -TT(:,end).*K1(:,end).*DDyT(:,end) + 0.5*sum((TT(:,2:end) - TT(:,1:end-1) ).*(K1(:,2:end).*DDyT(:,2:end) + K1(:,1:end-1).*DDyT(:,1:end-1)),2);
-            
-            %% Doing convolution is needed for poroelasticity, not for elasticity
-            if Elastic_Flag ~= 1
-                % Parallel way of doing convolution
-                DDTcor = (t + dt - tup)*(F-DD)./(-TT + t + dt - tup);
-                DD_var(:,:,1) = DD + DDTcor;
-    
-                DDyTcor = (t + dt - tup)*(Fy-DDy)./(-TT + t + dt - tup);
-                DD_var(:,:,2) = DDy + DDyTcor;
-    
-                PPTcor = (t + dt - tup)*(Fp-PP)./(-TT + t + dt - tup);
-                DD_var(:,:,3) = PP + PPTcor;
-    
-    
-                for i = 1:1:6
-                    con_var(:,i) = - TT_K(:,ind_0(i)) .* DD_var(:,end,ind_1(i))...
-                        + 0.5*sum(TT_diff .* ...
-                        (K_var(:,2:end, ind_2(i)).*DD_var(:,2:end,ind_3(i))...
-                        + K_var(:,1:end-1,ind_4(i)).*DD_var(:,1:end-1,ind_5(i))), 2);
-                end
-                
-                % If fully poroelastic
-                if Elastic_Flag == 0
-                    % Slightly modified to match variable names
-                    taur =  real(ifft(ifftshift(( akdhat1.*(con_var(:,1)+F)))));
-                    sigr =  real(ifft(ifftshift(( akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
-                    sigrn = real(ifft(ifftshift((-akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
-                    siyy =  -real(ifft(ifftshift(( akdhat4.*con_var(:,5) + akdhat1.*(con_var(:,6)+Fy)))));
-                
-                % If the bulk is only permeable, not poroelastic (Elastic_Flag == 2)
-                else
-                    taur =  real(ifft(ifftshift(( akdhat1 .* F))));
-                    sigr =  real(ifft(ifftshift((akdhat3.*con_var(:,4)))));
-                    sigrn = sigr; 
-                    siyy =  -real(ifft(ifftshift((akdhat1 .* Fy))));
-                end
+            %% Parallel way of doing convolution
+            DDTcor = (t + dt - tup)*(F-DD)./(-TT + t + dt - tup);
+            DD_var(:,:,1) = DD + DDTcor;
 
-            else % Elastic case
-                % Slightly modified to match variable names
-                taur =  real(ifft(ifftshift(( akdhat1 .* F))));
-                sigr =  pcg; %!
-                sigrn = pcg; %!
-                siyy =  -real(ifft(ifftshift((akdhat1 .* Fy))));
+            DDyTcor = (t + dt - tup)*(Fy-DDy)./(-TT + t + dt - tup);
+            DD_var(:,:,2) = DDy + DDyTcor;
+
+            PPTcor = (t + dt - tup)*(Fp-PP)./(-TT + t + dt - tup);
+            DD_var(:,:,3) = PP + PPTcor;
+
+
+            for i = 1:1:6
+                con_var(:,i) = - TT_K(:,ind_0(i)) .* DD_var(:,end,ind_1(i))...
+                    + 0.5*sum(TT_diff .* ...
+                    (K_var(:,2:end, ind_2(i)).*DD_var(:,2:end,ind_3(i))...
+                    + K_var(:,1:end-1,ind_4(i)).*DD_var(:,1:end-1,ind_5(i))), 2);
             end
+
+            % Slightly modified to match variable names
+            taur =  real(ifft(ifftshift(( akdhat1.*(con_var(:,1)+F)))));
+            sigr =  real(ifft(ifftshift(( akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
+            sigrn = real(ifft(ifftshift((-akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
+            siyy =  -real(ifft(ifftshift(( akdhat4.*con_var(:,5) + akdhat1.*(con_var(:,6)+Fy)))));
 
             tau = tau0 + taur;
 
@@ -741,10 +675,8 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
                 II = find(Vg/Vr >= Vthres);
                 if FHFlag == 0
                     f = @(x)abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) ))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2;
-                    % f = @(x) sum(abs((x/Vr - exp( ( (tau(II)-eta*x)./(si(II)) - fr - b(II).*log(thetag(II)/(L/Vr)) )./a(II) )))) ;%- const*([0;Vp(1:end-2) - 2*Vp(2:end-1) + Vp(3:end);0])/dt^2
                 else
                     f = @(x)abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II)));
-                    % f = @(x) sum(abs(x/Vr - 2 * sinh((((tau(II) - eta * x) ./ (si(II)) - fw) .* (1 + L ./ thetag(II) ./ Vw) + fw) ./ a(II)) ./ exp((fr + b(II) .* log(Vr * thetag(II) / L)) ./ a(II))));
                 end
                 VT = zeros(15,length(II));
                 VpT = Vg(II);
@@ -760,11 +692,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
                     [~,imin] = min(VT,[],1);
                 end
                 V(II) = VpT.*fact(imin)';
-                V(I) =   (Vr*exp( ( (tau(I)-eta*Vg(I))./(si(I)) - fr - b(I).*log(thetag(I)/(L/Vr)))./a(I)) );
-                % options = optimset('TolFun', 1.e-14, 'TolX', 1.e-14);
-                % [VpT, FpT000] = fminsearch(f, Vg(II), options); 
-                % V(II) = VpT; 
-
+                % V(I) =   (Vr*exp( ( (tau(I)-eta*Vg(I))./(si(I)) - fr - b(I).*log(thetag(I)/(L/Vr)))./a(I)) );
                 if FHFlag == 0
                     % Regularized friction law
                     V(I) = 2 * Vr * sinh((tau(I) - eta * Vg(I)) ./ (si(I)) ./ a(I)) ./ exp((fr + b(I) .* log(Vr * thetag(I) / L)) ./ a(I));
@@ -793,6 +721,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
                 theta = L./Vm.*(Vm.*thetap/L).^(exp(-Vm*dt/L));
             end
             dphi = dphi0 - gamma*log(Vr.*theta/L);
+
             pave = 0.5*(sigr + sigrn);
             pavepn = [pave(end);pave(1:end-1)];
             pavemn = [pave(2:end);pave(1)];
@@ -803,29 +732,17 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
 
             LK = - KB*KDdp - 0.5*KB*dt*(pcpp - 2*pcp + pcmp + pavepp - 2*pavep + pavemp + pavepn - 2*pave + pavemn)/DX;
 
-            % Poroelastic case
-            if Elastic_Flag ~= 1
-                M = spdiags(1+0.5*dt*(KA+2*KB/DX)*ones(length(x),1),0,length(x),length(x)) + spdiags(-0.5*dt*KB/DX*ones(length(x),2),[-1 1],length(x),length(x));
-                M(1,length(x)) = -0.5*dt*(KB)/DX;
-                M(length(x),1) = -0.5*dt*(KB)/DX;
-            % Elastic case
-            else
-                M = spdiags(1+dt*(2*KB/DX)*ones(length(x),1),0,length(x),length(x)) ...
-                    + spdiags(-dt*KB/DX*ones(length(x),2),[-1 1],length(x),length(x));
-            end
 
+            M = spdiags(1+0.5*dt*(KA+2*KB/DX)*ones(length(x),1),0,length(x),length(x)) + spdiags(-0.5*dt*KB/DX*ones(length(x),2),[-1 1],length(x),length(x));
 
-            
-            % Elastic case
-            if Elastic_Flag ~= 1
-                pc = M\(- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - INjectmass(t+dt)*INprofile./(rhof0*phi*(bfp + bnp)) - KA*KDp - 0.5*KA*dt*(pave + pavep - pcp) + LK ));
-            else
-                RHS = pcp - (bfs - bns)./(bfp + bnp) .* (siyy - siyyp) ...
-                      - (dphi - dphip) ./ (phi*(bfp + bnp)) ...
-                      + (INjectmass(t+dt) - INjectmass(t)) * INprofile./(rhof0*phi*(bfp + bnp)) ...
-                      ;
-                pc = M \ RHS; 
-            end
+            %M = diag(1+0.5*dt*(KA+2*KB/DX)*ones(length(x),1),0) +...
+            %    diag(-0.5*dt*KB/DX*ones(length(x) - 1,1),-1) + ...
+            %   diag(-0.5*dt*KB/DX*ones(length(x) - 1,1),1);
+
+            M(1,length(x)) = -0.5*dt*(KB)/DX;
+            M(length(x),1) = -0.5*dt*(KB)/DX;
+
+            pc = M\(- pave - (2*(bfs - bns)./(bfp + bnp).*siyy + 2*dphi./(phi*(bfp + bnp)) - INjectma .* INGrid./(rhof0*phi*(bfp + bnp)) - KA*KDp - 0.5*KA*dt*(pave + pavep - pcp) + LK ));
 
             pm = 0.5*(pc + 0.5*(sigr + sigrn));
             dy = 2*epsi*(phi/(1-phi)*bnp - bgp).*(pm - (phi/(1-phi)*bns - bgs)./(phi/(1-phi)*bnp - bgp).*siyy) + 2*epsi*dphi/(1-phi);
@@ -836,27 +753,9 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
 
             pcpn = [pc(end);pc(1:end-1)];
             pcmn = [pc(2:end);pc(1)];
-            
-            % IF elastic, no cross-fault fluid motion is allowed
-            if Elastic_Flag ~= 1
-                KD = KDp + 0.5*dt*(pave-pc + pavep-pcp);
-            
-            % Elastic
-            else
-                KD(:) = 0.;
-                sigr = pc;
-                sigrn = pc; 
-                pave = 0.5*(sigr + sigrn);
-                pavepn = [pave(end);pave(1:end-1)];
-                pavemn = [pave(2:end);pave(1)];
-                pavepp = [pavep(end);pavep(1:end-1)];
-                pavemp = [pavep(2:end);pavep(1)];
-                pcpp = [pcp(end);pcp(1:end-1)];
-                pcmp = [pcp(2:end);pcp(1)];
-            end 
-            
+            KD = KDp + 0.5*dt*(pave-pc + pavep-pcp);
             KDd = KDdp + 0.5*dt*( pcpn -2*pc + pcmn + pcpp - 2*pcp + pcmp + pavepp - 2*pavep + pavemp + pavepn - 2*pave + pavemn)/DX;
-            
+
             if (tryagaincount < miniter || max(abs((pc-pcg))./(a.*si0)) > 0.1*frac || norm(pc-pcg,1)/(norm(pc,1)+1) > 0.1*frac) && tryagaincount < 10
 
                 tryagain = 1;
@@ -874,9 +773,10 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
                 tryagaincount = 0;
                 cumutolvio = cumutolvio + dt*accuracyabs;
                 if accuracyabs > maxtolvio
-                    maxtolvio = accuracyabs;
+                    maxtolvio = accuracyabs ;
                     maxtolviotime = t;
                 end
+
             end
 
 
@@ -895,7 +795,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
                     sisave(:,runnerplot) = si;
                     tauS(:,runnerplot) = tau;
                     thetasave(:,runnerplot) = theta;
-                    InjectMaSave(runnerplot) = INjectmass(t+dt); 
+                    InjectMaSave(:, runnerplot) = INjectma; 
                     if plotflag == 1
                         f1 = figure(1);
                         sgtitle(strcat('\epsilon = ',' ',num2str(epsi),' --- ','time =',' ',num2str(t/(24*60*60)),' ',' days'))
@@ -1066,7 +966,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
                     InjectMaSave = InjectMaSave(:, 1:runnerplot - 1); 
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    filename = strcat('../outputMats/', 'William_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1077,7 +977,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    txtname = strcat('../outputMats/', 'William_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1109,6 +1009,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
                 if dt > maxdtfac*dtp
                     dt = maxdtfac*dtp;
                 end
+
             end
         end
         
@@ -1139,7 +1040,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    filename = strcat('../outputMats/', 'William_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -1150,7 +1051,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    txtname = strcat('../outputMats/', 'William_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
     
@@ -1171,6 +1072,6 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     fprintf(fileID, '\n%25s', 'c:'); fprintf(fileID, num2str(c));
     fclose(fileID);
     
-    disp(strcat("Time cost: ", num2str(t1)));
+
 end
 
