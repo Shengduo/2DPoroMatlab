@@ -3,14 +3,14 @@ function center_VPres(prename, saveflag, BigT)
     filename = strcat('../outputMats/', prename, '.mat');
     load(filename, 'pcsave', 'psave', 'sigrsave', 'tsaveplot', 'thetasave', ...
         'Vsave', 'G', 'si0', 'L', 'Vr', 'dsave', 'sisave', 'tauS');
-    fontsize = 24;
+    fontsize = 34;
     sigrnsave = 4 * (psave - 1/4 * sigrsave - 1/2 * pcsave);
     % Xrange
     % Xrange = [-50, 50];
     
     Trange = [0, BigT];
     Vrange = [1e-25, 1];
-    Prange = [-2, 4];
+    Prange = [-0.6, 1.2]; %[-2, 4];
     % Plot the center slip rate vs. Time
     fig1 = figure(1);
     set(fig1, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
@@ -30,13 +30,15 @@ function center_VPres(prename, saveflag, BigT)
     
     fig2 = figure(2);
     set(fig2, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
-    plot(tsaveplot, (pcsave(size(pcsave, 1)/2,:)+pcsave(size(pcsave, 1)/2 + 1,:))/(2e6), 'linewidth', 3.0);
+    plot(tsaveplot, (pcsave(size(pcsave, 1)/2,:)+pcsave(size(pcsave, 1)/2 + 1,:))/(2e6), 'linewidth', 4.0);
     hold on; grid on;
-    plot(tsaveplot, (sigrsave(size(sigrsave, 1)/2,:)+sigrsave(size(sigrsave, 1)/2 + 1,:))/(2e6), '--', 'linewidth', 3.0);
-    plot(tsaveplot, (sigrnsave(size(sigrnsave, 1)/2,:)+sigrnsave(size(sigrnsave, 1)/2 + 1,:))/(2e6), 'linewidth', 2.0);
+    plot(tsaveplot, (sigrsave(size(sigrsave, 1)/2,:)+sigrsave(size(sigrsave, 1)/2 + 1,:))/(2e6), '--', 'linewidth', 3.5);
+    plot(tsaveplot, (sigrnsave(size(sigrnsave, 1)/2,:)+sigrnsave(size(sigrnsave, 1)/2 + 1,:))/(2e6), 'linewidth', 3.0);
+    plot(tsaveplot, (psave(size(psave, 1)/2,:)+pcsave(size(psave, 1)/2 + 1,:))/(2e6), 'linewidth', 2.5);
+    
     xlim(Trange);
     ylim(Prange);
-    legend('$\delta p_c$', '$\delta p^+$', '$\delta p^-$', 'location', 'best', 'interpreter', 'latex');
+    legend('$\delta p_c$', '$\delta p^+$', '$\delta p^-$', '$\delta p_m$', 'location', 'best', 'interpreter', 'latex');
     xlabel('Time [s]', 'interpreter', 'latex');
     ylabel('Fluid Pressure [MPa]', 'interpreter', 'latex');
     set(gca, 'Fontsize', fontsize);
@@ -100,7 +102,7 @@ function center_VPres(prename, saveflag, BigT)
     xlabel('Slip [mm]', 'interpreter', 'latex');
     ylabel('Friction coefficient', 'interpreter', 'latex');
     % title('Friction coefficient vs. slip at the center', 'interpreter', 'latex');
-    set(gca, 'Fontsize', fontsize + 10);
+    set(gca, 'Fontsize', fontsize);
     
     % Save the figure
     if saveflag == 1

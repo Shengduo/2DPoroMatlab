@@ -28,11 +28,11 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, widef
         yticks = [-120, 0, 120];
         prename = prename + "_wide_";
     end
-    Vcrange = [-13, 1];
+    Vcrange = [-22, -13]; % [-13, 1];
     % Vcrange = [-7, 1];
     xticks = 0:800:2400; % 0:500 * (floor(BigT / 2000)):(BigT - 500); % xticks = 0:500:1500;
     Trange = [0, BigT]; % Trange = [0, 2000];
-    crange = [-0.6, 1.2] %[-2, 4];
+    crange = [-0.6, 1.2]; %[-2, 4];
     if subtraction_flag == 0
         pcsave = pcsave + 1.912e5;
         psave = psave + 1.912e5;

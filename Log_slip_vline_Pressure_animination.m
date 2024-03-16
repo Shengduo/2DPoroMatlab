@@ -2,14 +2,32 @@ clc,clear;
 close all;
 G = 1.0e10;
 % Objectname = 'FH_0_nuu_0.3_gamma_0_pflag_3_c_4e-07';
-Objectname = "NewFH_0_nuu_0.262_gamma_0_pflag_3_c_3.7707e-07_factor_1";
+% Objectname = "NewFH_0_nuu_0.262_gamma_0_pflag_3_c_3.7707e-07_factor_1";
 % Objectname = "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-07_factor_1";
 % Objectname = 'Reduced_gamma_0_pflag_3_c_4e-07';
 V_dyn = 1;
 
+% wide flag, trange
+wideflag = 1;
+
+% Xrange
+Xrange = [-50, 50];
+Xticks = [-30, 0, 30];
+
+crange = [-13, 1];
+
+if wideflag == 1
+    Xrange = [-200, 200];
+    Xticks = [-120, 0, 120];
+end
+
+% Set T ticks and range
+Yticks = 0:800:2400;
+Trange = [0, 3200];
+
 % Initialize names
 filename = strcat('../outputMats/', Objectname, '.mat');
-videoname = strcat(Objectname, '_logVP_withDim.mp4');
+videoname = strcat(Objectname, '_logVP_withDim_wide_', num2str(wideflag), '.mp4');
 
 % Initialize video
 myVideo = VideoWriter(strcat('../mp4files/', videoname), 'MPEG-4');
@@ -31,12 +49,7 @@ tsaveplot = tsaveplot(1:ind(1));
 
 % Some constants
 fontsize = 20;
-% Xrange
-Xrange = [-50, 50];
-Yticks = 0:500:1500;
-Trange = [0, 2000];
-Xticks = [-30, 0, 30];
-crange = [-13, 1];
+
 
 % Non-dimensionalize fault length
 L_nu = G * L / (b(1) - a(1)) / si0;
@@ -51,7 +64,7 @@ figg.Position = [1000, 597, 500, 700];
 
 
 % Find the mask of 0.5 Mpa
-pc_ = 0.5e6;
+pc_ = pc_ = 0.05e6; % 0.5e6;
 mask_pc = zeros(2, size(psave, 2));
 for iiii =1:1:size(psave, 2)
     id = find(psave(:,iiii) > pc_);
@@ -145,7 +158,7 @@ while jjj < size(pcsave, 2)
     xticks(Xticks);
     hold off;
     pause(0.001);
-    indd = find(tsaveplot > tsaveplot(jjj) + 20);
+    indd = find(tsaveplot > tsaveplot(jjj) + 10);
     if isempty(indd)
         break;
     end
