@@ -198,11 +198,10 @@ files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", .
 
 % selected_to_plot = [9];
 %% William injection
-files = ["William_NewFH_verticalFlag_0_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "William_NewFH_verticalFlag_1_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"]; 
+files = ["William_NewFH_verticalFlag_2_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"]; 
 % BigTs = BigTs(selected_to_plot);
 % files = files([1, 3]);
-BigTs = [3200, 3200];
+BigTs = [3200];
 % wideflag = 1;
 
 %% Westerly Granite
@@ -221,8 +220,8 @@ for iiii = 1:1:files.length()
     % % stacy_contours_undim(files(iiii), saveflag, 0, 1);
     % % PlotLeaking(files(iiii));
     % % close all;
-    % center_VPres(files(iiii), saveflag, BigTs(iiii));
-    % close all;
+    center_VPres(files(iiii), saveflag, BigTs(iiii));
+    close all;
     % stacy_contours(files(iiii), saveflag, 1, 1);
     % close all;
 end

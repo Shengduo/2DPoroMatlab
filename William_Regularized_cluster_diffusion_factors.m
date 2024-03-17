@@ -26,8 +26,12 @@ function William_Regularized_cluster_diffusion_factors(Nuu, Gamma, cc, FHFlag, p
         load("./William_vertical.mat");
         tdata = tdata ./ 10.;
         Pdata = Pdata * 1.e6;
-    else
+    elseif verticalFlag == 0
         load("./William_inclined.mat");
+        tdata = tdata ./ 10.; 
+        Pdata = Pdata * 1.e6; 
+    elseif verticalFlag == 2
+        load("./William_vertical_high_p.mat");
         tdata = tdata ./ 10.; 
         Pdata = Pdata * 1.e6; 
     end

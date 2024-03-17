@@ -10,7 +10,7 @@ function center_VPres(prename, saveflag, BigT)
     
     Trange = [0, BigT];
     Vrange = [1e-25, 1];
-    Prange = [-0.6, 1.2]; %[-2, 4];
+    Prange = [-2, 4]; % [-0.6, 1.2]; %[-2, 4];
     % Plot the center slip rate vs. Time
     fig1 = figure(1);
     set(fig1, 'Units', 'inches', 'Position', [0    10    7.7778    5.8333]);
