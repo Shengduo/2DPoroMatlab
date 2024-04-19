@@ -186,7 +186,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, ...
     %computing mobility of host rock (dependent on c)
     alpB = 3*(nuu-nu)/(B*(1+nuu)*(1-2*nu));
     kappa = c/(2*G*(1+nu)*B / (3*alpB*(1-alpB*B)*(1-2*nu) ) );
-    c = c*((1-nu)*(1-2*nuu) )/( (1-nuu)*(1-2*nu));
+    c = c*((1-nu)*(1-2*nuu)) / ((1-nuu)*(1-2*nu));
     
     % For elastic limit
     if Elastic_Flag == 1
