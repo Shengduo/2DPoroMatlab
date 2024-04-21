@@ -4,6 +4,7 @@ close all;
 %delete(gcp('nocreate'));
 %parpool(1);
 % Final mass injected varies as the below array
+nus = [0.35]; 
 nuus = [0.35];
 
 % Dilatancy coefficient gamma varies as the array below
@@ -22,7 +23,7 @@ bulkc_factors = [1.];
 
 % Injection flux
 baseFlux = 1.0e-4;
-fluxes = baseFlux .* [1.0, 0.75, 0.5, 0.25];
+fluxes = baseFlux .* [1.0];
 
 % Elastic flag, 1 - elastic, 0 - poroelastic, 2 - half-poroelastic
 Elastic_Flag = 2;
@@ -38,7 +39,7 @@ for iii = 1:1:size(nuus, 2)
                             factors = [kappacx_factors(lll), ...
                                        kappacy_factors(mmm), ...
                                        bulkc_factors(nnn)];
-                            Regularized_cluster_diffusion_factors_flux_control_elastic_1(nuus(iii), ...
+                            Regularized_cluster_diffusion_factors_flux_control_elastic_1(nuus(iii), nus(iii), ...
                                 gammas(jjj), ccs(kkk), FHFlag, 3, factors, ...
                                 fluxes(fff), Elastic_Flag);
                         end
