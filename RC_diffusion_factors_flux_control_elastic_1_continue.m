@@ -173,13 +173,23 @@ function RC_diffusion_factors_flux_control_elastic_1_continue(prefix, ...
                         (K_var(:,2:end, ind_2(i)).*DD_var(:,2:end,ind_3(i))...
                         + K_var(:,1:end-1,ind_4(i)).*DD_var(:,1:end-1,ind_5(i))), 2);
                 end
-    
-                % Slightly modified to match variable names
-                taur =  real(ifft(ifftshift(( akdhat1.*(con_var(:,1)+F)))));
-                sigr =  real(ifft(ifftshift(( akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
-                sigrn = real(ifft(ifftshift((-akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
-                siyy =  -real(ifft(ifftshift(( akdhat4.*con_var(:,5) + akdhat1.*(con_var(:,6)+Fy)))));
-            
+                
+                % If fully poroelastic
+                if Elastic_Flag == 0
+                    % Slightly modified to match variable names
+                    taur =  real(ifft(ifftshift(( akdhat1.*(con_var(:,1)+F)))));
+                    sigr =  real(ifft(ifftshift(( akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
+                    sigrn = real(ifft(ifftshift((-akdhat2.*(con_var(:,2)+F)  + akdhat3.*con_var(:,4) + akdhat5.*(con_var(:,3)+Fy))))); %!
+                    siyy =  -real(ifft(ifftshift(( akdhat4.*con_var(:,5) + akdhat1.*(con_var(:,6)+Fy)))));
+                
+                % If the bulk is only permeable, not poroelastic (Elastic_Flag == 2)
+                else
+                    taur =  real(ifft(ifftshift(( akdhat1 .* F))));
+                    sigr =  real(ifft(ifftshift((akdhat3.*con_var(:,4)))));
+                    sigrn = sigr; 
+                    siyy =  -real(ifft(ifftshift((akdhat1 .* Fy))));
+                end
+
             else % Elastic case
                 % Slightly modified to match variable names
                 taur =  real(ifft(ifftshift(( akdhat1 .* F))));
