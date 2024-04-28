@@ -2,7 +2,7 @@ clc,clear;
 close all;
 
 % File prefixes
-prefixs = ["Elastic_Flag2_FluxTime_0.0001_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1"]; 
+prefixs = ["Elastic_Flag2_FluxTime_0.0001_NewFH_0_NewFH_0_nu_nuu_0.24_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1"]; 
 % New Terminating times
 term_times = [4040]; 
 

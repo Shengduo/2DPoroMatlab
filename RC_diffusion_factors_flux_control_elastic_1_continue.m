@@ -277,7 +277,7 @@ function RC_diffusion_factors_flux_control_elastic_1_continue(prefix, ...
             else
                 theta = L./Vm.*(Vm.*thetap/L).^(exp(-Vm*dt/L));
             end
-            dphi = dphi0 - gamma*log(Vr.*theta/L);
+            dphi = dphi0 - Gamma*log(Vr.*theta/L);
             pave = 0.5*(sigr + sigrn);
             pavepn = [pave(end);pave(1:end-1)];
             pavemn = [pave(2:end);pave(1)];
@@ -500,7 +500,7 @@ function RC_diffusion_factors_flux_control_elastic_1_continue(prefix, ...
                             %VV(ixx,isnan(VV(ixx,:))) = 0;
 
                             % Not important if gamma = 0
-                            if gamma ~= 0
+                            if Gamma ~= 0
                                 FRI = FRy(ixx,samplepoints)';
                                 FII = FIy(ixx,samplepoints)';
                                 DDy(ixx,:) = interp1q(tsave(samplepoints)',FRI,TTI(:,ixx))...
