@@ -192,11 +192,12 @@ files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", .
 %          "VsFluxTime_7.5e-05_a_0.005_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
 %          "VsFluxTime_0.0001_a_0.005_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];
 
-files = ["FluxTime_0.0001_1010_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];
-BigTs = [4000];
+files = ["FluxTime_0.0001_1010_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+         "Elastic_Flag2_FluxTime_0.0001_1010_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];
+BigTs = [4000, 4000];
 % BigTs = [8000, 4000, 8000 / 3, 2000, 2000, 2000, 2000, 2000, 2000];
 
-% selected_to_plot = [9];
+selected_to_plot = [2];
 %% William injection
 % files = ["William_NewFH_verticalFlag_1_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"]; 
 % BigTs = BigTs(selected_to_plot);
@@ -206,16 +207,16 @@ BigTs = [4000];
 
 
 %% Injection with elastic permeable solid
-files = ["Elastic_Flag2_FluxTime_2.5e-05_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "Elastic_Flag2_FluxTime_5e-05_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "Elastic_Flag2_FluxTime_7.5e-05_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "Elastic_Flag2_FluxTime_0.0001_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "Elastic_Flag2_FluxTime_0.0001_NewFH_0_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         ]; 
-
-BigTs = [8000, 4000, 8000 / 3, 2000, 2000]; 
-
-selected_to_plot = [1, 2, 3, 4, 5];
+% files = ["Elastic_Flag2_FluxTime_2.5e-05_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          "Elastic_Flag2_FluxTime_5e-05_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          "Elastic_Flag2_FluxTime_7.5e-05_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          "Elastic_Flag2_FluxTime_0.0001_NewFH_0_nuu_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          "Elastic_Flag2_FluxTime_0.0001_NewFH_0_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          ]; 
+% 
+% BigTs = [8000, 4000, 8000 / 3, 2000, 2000]; 
+% 
+% selected_to_plot = [1, 2, 3, 4, 5];
 BigTs = BigTs(selected_to_plot);
 files = files(selected_to_plot);
 

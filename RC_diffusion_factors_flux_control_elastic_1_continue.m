@@ -1,13 +1,14 @@
-function Regularized_cluster_diffusion_factors_flux_control_elastic_1_continue(Nuu, ... 
-                    Gamma, cc, ...
-                    FHFlag, poreflag, factors, flux, Elastic_Flag)
-    
+function RC_diffusion_factors_flux_control_elastic_1_continue(prefix, ...
+        New_Terminating_time)
     % Continue running on previously-saved files
-    filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
-                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
+    % filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    %                   '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
+    %                   num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
     
+    filename = strcat('../outputMats/', prefix, '.mat');
     load(filename); 
+    Terminating_time = New_Terminating_time; 
+    NT = NT + it; 
 
     % Main loop cannot be parallelized
     while it <= NT
@@ -540,10 +541,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1_continue(N
                     InjectMaSave = InjectMaSave(:, 1:runnerplot - 1); 
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
-                                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
-
+                    filename = strcat('../outputMats/', prefix, '_continue_', num2str(New_Terminating_time), '.mat');
                     % Record excuting time of the program
                     %t1 = cputime - t0;
                     t1 = toc(tstart);
@@ -551,9 +549,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1_continue(N
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
-                                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
+                    txtname = strcat('../outputMats/', prefix, '_continue_', num2str(New_Terminating_time), '.txt');
 
                     fileID = fopen(txtname, 'w');
 
@@ -613,10 +609,8 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1_continue(N
     
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
-                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
-
+    filename = strcat('../outputMats/', prefix, '_continue_', num2str(New_Terminating_time), '.mat');
+    
     % Record excuting time of the program
     % t1 = cputime - t0;
     t1 = toc(tstart);
@@ -624,10 +618,8 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1_continue(N
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nuu_',  num2str(nuu), '_gamma_', num2str(gamma),...
-                      '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
-    
+    txtname = strcat('../outputMats/', prefix, '_continue_', num2str(New_Terminating_time), '.txt');
+
     fileID = fopen(txtname, 'w');
     
     fprintf(fileID, '%25s', 'Filename: '); fprintf(fileID, filename);
