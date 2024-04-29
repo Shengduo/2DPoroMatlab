@@ -9,7 +9,11 @@ function RC_diffusion_factors_flux_control_elastic_1_continue(prefix, ...
     load(filename); 
     Terminating_time = New_Terminating_time; 
     NT = NT + it; 
-
+    
+    if ~exist('Elastic_Flag', 'var')
+        Elastic_Flag = 0; 
+    end
+    
     % Main loop cannot be parallelized
     while it <= NT
         tryagaincount = 0;
@@ -567,7 +571,7 @@ function RC_diffusion_factors_flux_control_elastic_1_continue(prefix, ...
                     fprintf(fileID, '\n%25s', 'NT: '); fprintf(fileID, num2str(NT));
                     fprintf(fileID, '\n%25s', 'lhs, rhs: '); 
                     fprintf(fileID, strcat(num2str(lhs), ', ', num2str(rhs))); 
-                    fprintf(fileID, '\n%25s', 'Gamma: '); fprintf(fileID, num2str(gamma));
+                    fprintf(fileID, '\n%25s', 'Gamma: '); fprintf(fileID, num2str(Gamma));
                     fprintf(fileID, '\n%25s', 'a, b: '); 
                     fprintf(fileID, strcat(num2str(a(1)), ', ', num2str(b(1)))); 
                     fprintf(fileID, '\n%25s', 'Terminated Slip rate: '); fprintf(fileID, num2str(Terminating_slip_rate));
@@ -578,7 +582,7 @@ function RC_diffusion_factors_flux_control_elastic_1_continue(prefix, ...
                     fprintf(fileID, '\n%25s', 'c:'); fprintf(fileID, num2str(c));
                     fclose(fileID);
                     disp('NaN detected in V!');
-                    disp(strcat('Gamma = ', num2str(gamma)));
+                    disp(strcat('Gamma = ', num2str(Gamma)));
                     return;
                 end
                 t = t + dt;
@@ -636,7 +640,7 @@ function RC_diffusion_factors_flux_control_elastic_1_continue(prefix, ...
     fprintf(fileID, '\n%25s', 'NT: '); fprintf(fileID, num2str(NT));
     fprintf(fileID, '\n%25s', 'lhs, rhs: '); 
     fprintf(fileID, strcat(num2str(lhs), ', ', num2str(rhs))); 
-    fprintf(fileID, '\n%25s', 'Gamma: '); fprintf(fileID, num2str(gamma));
+    fprintf(fileID, '\n%25s', 'Gamma: '); fprintf(fileID, num2str(Gamma));
     fprintf(fileID, '\n%25s', 'a, b: '); 
     fprintf(fileID, strcat(num2str(a(1)), ', ', num2str(b(1)))); 
     fprintf(fileID, '\n%25s', 'Terminated Slip rate: '); fprintf(fileID, num2str(Terminating_slip_rate));
