@@ -23,7 +23,7 @@ bulkc_factors = [1.];
 
 % Injection flux
 baseFlux = 1.0e-4;
-fluxes = baseFlux .* [0.5, 0.75, 0.25];
+fluxes = baseFlux .* [1.0];
 
 % Elastic flag, 1 - elastic, 0 - poroelastic, 2 - half-poroelastic
 Elastic_Flag = 2;

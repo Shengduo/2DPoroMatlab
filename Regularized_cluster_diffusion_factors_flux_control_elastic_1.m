@@ -30,7 +30,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
     % Terminating slip rate and simulating time
     Terminating_slip_rate = 1.0e-1;
     baseFlux = 1.0e-4; 
-    Terminating_time = baseFlux * 2020 / flux;
+    Terminating_time = baseFlux * 2020 / flux * 2;
     
     % Terminating time if in_mass = 0, 12 days
     % if in_mass == 0
@@ -1080,7 +1080,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
                     % Write changable parameters into a '.txt' file
                     txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
+                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
 
                     fileID = fopen(txtname, 'w');
 
