@@ -1175,3 +1175,13 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
     disp(strcat("Time cost: ", num2str(t1)));
 end
 
+ % 1-0-1-0 injection, period T = 2020 s. 
+function InMass = INjectmass(t)
+    flux = 1.e-4;
+    if ((t / 2020.) - floor(t / 2020.)) <= 0.5
+        InMass = flux * 0.5 * floor(t / 2020.) * 2020. + ... 
+                 flux * ((t / 2020.) - floor(t / 2020.)) * 2020.; 
+    else
+        InMass = flux * 0.5 * ceil(t / 2020.) * 2020.;
+    end
+end

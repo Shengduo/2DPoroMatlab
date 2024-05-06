@@ -1,6 +1,7 @@
 function RC_diffusion_factors_flux_control_elastic_1_1010(Nuu, Nu, ... 
                     Gamma, cc, ...
-                    FHFlag, poreflag, factors, flux, Elastic_Flag)
+                    FHFlag, poreflag, factors, flux, Elastic_Flag, ...
+                    end_time)
     %% factors: 
     % diffusivity factor for [kappacx, kappacy and c] of the bulk 
     %% Problem setup 
@@ -30,7 +31,7 @@ function RC_diffusion_factors_flux_control_elastic_1_1010(Nuu, Nu, ...
     % Terminating slip rate and simulating time
     Terminating_slip_rate = 1.0e-1;
     baseFlux = 1.0e-4; 
-    Terminating_time = baseFlux * 2020 / flux * 2.;
+    Terminating_time = end_time; % baseFlux * 2020 / flux * 2.;
     
     % Terminating time if in_mass = 0, 12 days
     % if in_mass == 0
@@ -91,7 +92,9 @@ function RC_diffusion_factors_flux_control_elastic_1_1010(Nuu, Nu, ...
     % All units are standard SI
 
     % x cooridinates
-    x = linspace(-250, 250, 2^10);
+    % x = linspace(-250, 250, 2^10);
+    x = linspace(-500, 500, 2^11); 
+
     N = length(x);
     % KL: number of values used in computing convolution kernels
     % large KL is more accurate but slower, I've found values in the range between 2^6-2^8 to be sufficient
@@ -276,17 +279,17 @@ function RC_diffusion_factors_flux_control_elastic_1_1010(Nuu, Nu, ...
     % INjectmass = @(t) flux * t;
 
     % 1-0-1-0 injection
-    function InMass = INjectmass(t)
-        if t <= 0.25 * Terminating_time
-            InMass = flux * t;
-        elseif t <= 0.5 * Terminating_time
-            InMass = flux * 0.25 * Terminating_time;
-        elseif t <= 0.75 * Terminating_time
-            InMass = flux * (t - 0.25 * Terminating_time);
-        else
-            InMass =  0.5 * Terminating_time * flux;
-        end
-    end
+    % function InMass = INjectmass(t)
+    %     if t <= 0.25 * Terminating_time
+    %         InMass = flux * t;
+    %     elseif t <= 0.5 * Terminating_time
+    %         InMass = flux * 0.25 * Terminating_time;
+    %     elseif t <= 0.75 * Terminating_time
+    %         InMass = flux * (t - 0.25 * Terminating_time);
+    %     else
+    %         InMass =  0.5 * Terminating_time * flux;
+    %     end
+    % end
 
     %%
     % Initialize the state variable with small noise around steady state
@@ -1083,7 +1086,7 @@ function RC_diffusion_factors_flux_control_elastic_1_1010(Nuu, Nu, ...
                     % Filename reflects fract number and parallelization
                     filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_1010_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
+                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)), '_endTime_', num2str(end_time), '.mat');
 
                     % Record excuting time of the program
                     %t1 = cputime - t0;
@@ -1094,7 +1097,7 @@ function RC_diffusion_factors_flux_control_elastic_1_1010(Nuu, Nu, ...
                     % Write changable parameters into a '.txt' file
                     txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_1010_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
+                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)), '_endTime_', num2str(end_time), '.txt');
 
                     fileID = fopen(txtname, 'w');
 
@@ -1156,7 +1159,7 @@ function RC_diffusion_factors_flux_control_elastic_1_1010(Nuu, Nu, ...
     % Filename reflects fract number and parallelization
     filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_1010_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
+                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)), '_endTime_', num2str(end_time), '.mat');
 
     % Record excuting time of the program
     % t1 = cputime - t0;
@@ -1167,7 +1170,7 @@ function RC_diffusion_factors_flux_control_elastic_1_1010(Nuu, Nu, ...
     % Write changable parameters into a '.txt' file
     txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_1010_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
+                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)), '_endTime_', num2str(end_time), '.txt');
     
     fileID = fopen(txtname, 'w');
     
@@ -1189,3 +1192,13 @@ function RC_diffusion_factors_flux_control_elastic_1_1010(Nuu, Nu, ...
     disp(strcat("Time cost: ", num2str(t1)));
 end
 
+ % 1-0-1-0 injection, period T = 2020 s. 
+function InMass = INjectmass(t)
+    flux = 1.e-4;
+    if ((t / 2020.) - floor(t / 2020.)) <= 0.5
+        InMass = flux * 0.5 * floor(t / 2020.) * 2020. + ... 
+                 flux * ((t / 2020.) - floor(t / 2020.)) * 2020.; 
+    else
+        InMass = flux * 0.5 * ceil(t / 2020.) * 2020.;
+    end
+end
