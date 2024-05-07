@@ -30,7 +30,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
     % Terminating slip rate and simulating time
     Terminating_slip_rate = 1.0e-1;
     baseFlux = 1.0e-4; 
-    Terminating_time = baseFlux * 2020 / flux * 2;
+    Terminating_time = baseFlux * 2020 / flux;
     
     % Terminating time if in_mass = 0, 12 days
     % if in_mass == 0

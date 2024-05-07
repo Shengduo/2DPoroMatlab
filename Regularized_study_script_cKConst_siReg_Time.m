@@ -17,7 +17,7 @@ nuus = [0.35];
 gammas = [0];
 
 % Bulk diffusivity
-ccs = [4e-8];
+ccs = [1e-8];
 
 % Factors of layer y-mobility
 factors = [1];
