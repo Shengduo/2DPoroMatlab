@@ -4,7 +4,7 @@ close all;
 %delete(gcp('nocreate'));
 %parpool(1);
 % Final mass injected varies as the below array
-nus = [0.24]; 
+nus = [0.24];
 nuus = [0.35];
 
 % Dilatancy coefficient gamma varies as the array below
