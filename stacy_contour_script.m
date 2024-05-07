@@ -243,8 +243,8 @@ files = files(selected_to_plot);
 % files = ["WesterlyGranite_Reverted_gamma_0_pflag_3_kappacx_8.7584e-15"];
 for iiii = 1:1:files.length()
     % files(iiii) = strcat('../outputMats/', files(iiii));
-    % stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0);
-    % close all;
+    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0);
+    close all;
 
     stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 1);
     close all;
