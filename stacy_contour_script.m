@@ -195,13 +195,13 @@ files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", .
 % files = ["FluxTime_0.0001_1010_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
 %          "Elastic_Flag2_FluxTime_0.0001_1010_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
 %          "Elastic_Flag2_FluxTime_0.0001_1010_NewFH_0_nu_nuu_0.24_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];
-% BigTs = [4000, 4000, 4000];
+BigTs = [2000, 4000, 4000];
 % % BigTs = [8000, 4000, 8000 / 3, 2000, 2000, 2000, 2000, 2000, 2000];
 % 
-% selected_to_plot = [2];
+selected_to_plot = [1];
 % 
-% BigTs = BigTs(selected_to_plot);
-% files = files(selected_to_plot);
+BigTs = BigTs(selected_to_plot);
+files = files(selected_to_plot);
 
 %% William injection
 % files = ["William_NewFH_verticalFlag_1_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"]; 
@@ -223,31 +223,39 @@ files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", .
 % 
 % selected_to_plot = [1, 2, 3, 4, 5];
 
-files = ["Elastic_Flag2_FluxTime_0.0001_NewFH_0_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "Elastic_Flag2_FluxTime_7.5e-05_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "Elastic_Flag2_FluxTime_5e-05_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
-         "Elastic_Flag2_FluxTime_0.0001_NewFH_0_NewFH_0_nu_nuu_0.24_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1_continue_4040", ...
-         "Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_continue_4040", ...
-         "Elastic_Flag2_FluxTime_0.0001_NewFH_0_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_continue_4040", ...
-         "FluxTime_0.0001_1010_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_continue_8080", ...
-         "shit5", ...
-         "Elastic_Flag0_FluxTime_0.0001_1010_NewFH_0_nu_nuu_0.24_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_endTime_8080"];
-BigTs = [2000, 8000 / 3, 4000, 4000, 4000, 4000, 8080, 2020, 8080]; 
+% files = ["Elastic_Flag2_FluxTime_0.0001_NewFH_0_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          "Elastic_Flag2_FluxTime_7.5e-05_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          "Elastic_Flag2_FluxTime_5e-05_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1", ...
+%          "Elastic_Flag2_FluxTime_0.0001_NewFH_0_NewFH_0_nu_nuu_0.24_0.24_gamma_0_pflag_3_c_1e-08_factors_1_1_1_continue_4040", ...
+%          "Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_continue_4040", ...
+%          "Elastic_Flag2_FluxTime_0.0001_NewFH_0_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_continue_4040", ...
+%          "FluxTime_0.0001_1010_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_continue_8080", ...
+%          "shit5", ...
+%          "Elastic_Flag0_FluxTime_0.0001_1010_NewFH_0_nu_nuu_0.24_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_endTime_8080"];
+% BigTs = [2000, 8000 / 3, 4000, 4000, 4000, 4000, 8080, 2020, 8080]; 
+% 
+% selected_to_plot = [1];
+% BigTs = BigTs(selected_to_plot);
+% files = files(selected_to_plot);
 
-selected_to_plot = [9];
-BigTs = BigTs(selected_to_plot);
-files = files(selected_to_plot);
-
+%% Keeping cmass for elastic, permeable
+% files = ["Elastic_Flag2_FluxTime_0.0001_NewFH_0_nu_nuu_0.24_0.24_gamma_0_pflag_3_c_6.1712e-09_factors_1_1_1", ...
+%          "Elastic_Flag2_FluxTime_0.0001_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_6.1712e-09_factors_1_1_1"];
+% BigTs = [2000, 2000]; 
+% 
+% selected_to_plot = [1, 2];
+% BigTs = BigTs(selected_to_plot);
+% files = files(selected_to_plot);
 %% Westerly Granite
 % files = ["WesterlyGranite_gamma_0_pflag_3_kappacx_8.7584e-11"];
 % files = ["WesterlyGranite_Reverted_gamma_0_pflag_3_kappacx_8.7584e-15"];
 for iiii = 1:1:files.length()
     % files(iiii) = strcat('../outputMats/', files(iiii));
-    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0);
-    close all;
-
-    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 1);
-    close all;
+    % stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0);
+    % close all;
+    % 
+    % stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 1);
+    % close all;
 
     stacy_LnuVsPRegion(files(iiii), saveflag, 0, 1, BigTs(iiii));
     close all;
