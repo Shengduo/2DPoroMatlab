@@ -4,15 +4,15 @@ close all;
 %delete(gcp('nocreate'));
 %parpool(1);
 % Final mass injected varies as the below array
-nus = [0.24, 0.35];
-nuus = [0.24, 0.35];
+nus = [0.35];
+nuus = [0.35];
 
 % Dilatancy coefficient gamma varies as the array below
 gammas = [0];
 
 % Bulk diffusivity
-% ccs = [1.0e-8];
-ccs = [6.1712e-9]; % cmass
+ccs = [1.0e-8];
+% ccs = [6.1712e-9]; % cmass
 
 % No flash heating
 FHFlag = 0;
