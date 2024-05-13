@@ -1,4 +1,4 @@
-function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, wideflag)
+function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, wideflag, narrow_flag)
     % pwdd = '/Users/shengduoliu/Documents/Elias_Matlab/cand_simus/stacy_replicate/Poroelastic_properties_comparison';
     %saveflag = 1;
     %pcflag = 0;
@@ -21,11 +21,21 @@ function stacy_contours(prename, saveflag, pcflag, subtraction_flag, BigT, widef
     % Xrange = [-5, 5];
     % yticks = [-3, 0, 3];
     if wideflag == 0
-        Xrange = [-50, 50];
-        yticks = [-30, 0, 30];
+        if narrow_flag == 1
+            Xrange = [-0.50, 0.50];
+            yticks = [-0.30, 0, 0.30];
+        else
+            Xrange = [-50, 50];
+            yticks = [-30, 0, 30];
+        end
     else
-        Xrange = [-200, 200];
-        yticks = [-120, 0, 120];
+        if narrow_flag == 1
+            Xrange = [-2, 2];
+            yticks = [-1.2, 0, 1.2];
+        else
+            Xrange = [-200, 200];
+            yticks = [-120, 0, 120];
+        end
         prename = prename + "_wide_";
     end
     Vcrange = [-13, 1]; % [-22, -13]; % [-13, 1];

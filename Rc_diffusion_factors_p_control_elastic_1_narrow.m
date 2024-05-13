@@ -198,7 +198,7 @@ function Rc_diffusion_factors_p_control_elastic_1(Nuu, Nu, ...
         nuu = nu; 
         alpB = 0.; 
         B = 0.; 
-        kappa = 2.168791096126737e-19; % Computed with nu = 0.24, nuu = 0.35.
+        kappa = 2.168791096126737e-19 * factors(3); % Computed with nu = 0.24, nuu = 0.35.
         c = cc * factors(3); 
     end
     

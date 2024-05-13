@@ -20,7 +20,7 @@ FHFlag = 0;
 % All diffusion factors
 kappacx_factors = [1.e-4];
 kappacy_factors = [1.];
-bulkc_factors = [1.];
+bulkc_factors = [1.e2];
 
 % Injection flux
 baseFlux = 1.0e-4;
