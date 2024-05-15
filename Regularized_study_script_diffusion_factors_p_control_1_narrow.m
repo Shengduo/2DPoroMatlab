@@ -18,9 +18,9 @@ ccs = [1.0e-8];
 FHFlag = 0;
 
 % All diffusion factors
-kappacx_factors = [1.e-4, 1.e-4, 1.e-4];
-kappacy_factors = [1., 1.e2, 1.e4];
-bulkc_factors = [1., 1.e2, 1.e4];
+kappacx_factors = [1.e-4, 1.e-4];
+kappacy_factors = [1.e2, 1.e4];
+bulkc_factors = [1.e2, 1.e4];
 
 % Injection flux
 baseFlux = 1.0e-4;

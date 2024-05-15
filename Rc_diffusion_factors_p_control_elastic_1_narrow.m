@@ -91,7 +91,7 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow(Nuu, Nu, ...
     % All units are standard SI
 
     % x cooridinates
-    x = linspace(-2.50, 2.50, 2^10);
+    x = linspace(-2.50, 2.50, 2^8);
     N = length(x);
     % KL: number of values used in computing convolution kernels
     % large KL is more accurate but slower, I've found values in the range between 2^6-2^8 to be sufficient
@@ -254,8 +254,8 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow(Nuu, Nu, ...
     %center = 0;
     %INprofile =  (1/(2*epsi*sigma*sqrt(2*pi))*exp(-0.5*((x-center)/sigma).^2))';
     %boxcar injector
-    lhs = - 0.005;
-    rhs = 0.005;
+    lhs = - 0.005 * 4;
+    rhs = 0.005 * 4;
     %source term relative volume per unit length, should normalize to
     %1/2*epsi
 
