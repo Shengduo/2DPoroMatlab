@@ -5,10 +5,11 @@ G = 1.0e10;
 % Objectname = "NewFH_0_nuu_0.262_gamma_0_pflag_3_c_3.7707e-07_factor_1";
 % Objectname = "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-07_factor_1";
 % Objectname = 'Reduced_gamma_0_pflag_3_c_4e-07';
+Objectname = 'Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1';
 V_dyn = 1;
 
 % wide flag, trange
-wideflag = 1;
+wideflag = 0;
 
 % Xrange
 Xrange = [-50, 50];
@@ -23,7 +24,7 @@ end
 
 % Set T ticks and range
 Yticks = 0:800:2400;
-Trange = [0, 3200];
+Trange = [0, 2000];
 
 % Initialize names
 filename = strcat('../outputMats/', Objectname, '.mat');
@@ -64,7 +65,7 @@ figg.Position = [1000, 597, 500, 700];
 
 
 % Find the mask of 0.5 Mpa
-pc_ = pc_ = 0.05e6; % 0.5e6;
+pc_ = 0.5e6; % 0.5e6;
 mask_pc = zeros(2, size(psave, 2));
 for iiii =1:1:size(psave, 2)
     id = find(psave(:,iiii) > pc_);
@@ -152,7 +153,7 @@ while jjj < size(pcsave, 2)
     xlabel('$X [\mathrm{m}]$', 'interpreter', 'latex');
     ylabel ('$\delta p$ [MPa]', 'interpreter', 'latex');
     hold on; grid on;
-    title(strcat('Simulated Time $t = $', num2str(tsaveplot(jjj), '%.1f'), ' s'), 'interpreter', 'latex');
+    title(strcat('Simulated Time $t = $', num2str(tsaveplot(jjj), '%.4f'), ' s'), 'interpreter', 'latex');
     legend('$\delta p^+$','$\delta p_c$', '$\delta p^-$', 'location', 'best', 'interpreter', 'latex');
     set(gca, 'FontSize', 20);
     xticks(Xticks);

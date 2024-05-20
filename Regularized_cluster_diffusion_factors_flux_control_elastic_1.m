@@ -1,6 +1,6 @@
 function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, ... 
                     Gamma, cc, ...
-                    FHFlag, poreflag, factors, flux, Elastic_Flag)
+                    FHFlag, poreflag, factors, flux, Elastic_Flag, terminating_time)
     %% factors: 
     % diffusivity factor for [kappacx, kappacy and c] of the bulk 
     %% Problem setup 
@@ -30,7 +30,10 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
     % Terminating slip rate and simulating time
     Terminating_slip_rate = 1.0e-1;
     baseFlux = 1.0e-4; 
-    Terminating_time = baseFlux * 2020 / flux;
+    Terminating_time = terminating_time; % baseFlux * 2020 / flux;
+    if Terminating_time == 0
+        Terminating_time = baseFlux * 2020 / flux;
+    end
     
     % Terminating time if in_mass = 0, 12 days
     % if in_mass == 0
@@ -461,8 +464,12 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
             ttt2 = ttt2(2:end-1);
             ttt = sort([ttt1 ttt2]);
             TT(i,:) = fliplr(-ttt);
-            K1(i,:)=G1(ttt,kv+eps);
-            K2(i,:)=G2(ttt,kv+eps);
+            K1(i,:)= 0.; % G1(ttt,kv+eps);
+            K2(i,:)= -c.*kappac./kappa./epsi./sqrt(pi.*c.*ttt) + ...
+                    c.*(kappac./kappa./epsi).^2*exp((kappac./kappa./epsi)^2*c.*ttt) ...
+                    .*erfc(kappac./kappa./epsi.*sqrt(c.*ttt));
+            % (- c*k.^2.* (1 + FF(k)).*( exp(-c*k.^2*t)./sqrt(pi*c*k.^2*t) - FF(k).*exp((FF(k).^2 - 1).*c*k.^2*t).*erfc(FF(k).*sqrt(c*k.^2*t)) )       );
+% G2(ttt,kv+eps);
         end
 
 
@@ -1069,7 +1076,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
                     % Filename reflects fract number and parallelization
                     filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
+                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)), '_', num2str(Terminating_time), '.mat');
 
                     % Record excuting time of the program
                     %t1 = cputime - t0;
@@ -1080,7 +1087,8 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
                     % Write changable parameters into a '.txt' file
                     txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
+                                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'_', num2str(Terminating_time), '.txt');
+
 
                     fileID = fopen(txtname, 'w');
 
@@ -1142,7 +1150,8 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
     % Filename reflects fract number and parallelization
     filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
+                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'_', num2str(Terminating_time), '.mat');
+
 
     % Record excuting time of the program
     % t1 = cputime - t0;
@@ -1153,7 +1162,8 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
     % Write changable parameters into a '.txt' file
     txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_FluxTime_', num2str(flux), '_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
-                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
+                      num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'_', num2str(Terminating_time), '.txt');
+
     
     fileID = fopen(txtname, 'w');
     

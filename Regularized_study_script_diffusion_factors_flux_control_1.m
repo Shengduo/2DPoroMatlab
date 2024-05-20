@@ -30,7 +30,7 @@ fluxes = baseFlux .* [1.0];
 Elastic_Flag = 2;
 
 % Terminating_time
-Terminating_times = [2020];
+Terminating_times = [4080];
 
 %for i = 1:1:1
 for iii = 1:1:size(nuus, 2)
@@ -45,7 +45,7 @@ for iii = 1:1:size(nuus, 2)
                                        bulkc_factors(nnn)];
                             Regularized_cluster_diffusion_factors_flux_control_elastic_1( nuus(iii), nus(iii), ...
                                 gammas(jjj), ccs(kkk), FHFlag, 3, factors, ...
-                                fluxes(fff), Elastic_Flag); 
+                                fluxes(fff), Elastic_Flag, Terminating_times(iii)); 
                             % RC_diffusion_factors_flux_control_elastic_1_1010( ...
                                 %, ...
                                 % Terminating_times(iii));
