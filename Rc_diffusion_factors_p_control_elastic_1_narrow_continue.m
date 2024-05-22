@@ -10,7 +10,7 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow_continue(prefix, ...
     end
 
     % Main loop cannot be parallelized
-    for it = 2:NT
+    while it <= NT
         tryagaincount = 0;
         enter = 1;
 
@@ -279,7 +279,7 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow_continue(prefix, ...
             else
                 theta = L./Vm.*(Vm.*thetap/L).^(exp(-Vm*dt/L));
             end
-            dphi = dphi0 - gamma*log(Vr.*theta/L);
+            dphi = dphi0 - Gamma*log(Vr.*theta/L);
             pave = 0.5*(sigr + sigrn);
             pavepn = [pave(end);pave(1:end-1)];
             pavemn = [pave(2:end);pave(1)];
@@ -501,8 +501,8 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow_continue(prefix, ...
                             %VV(ixx,:) = [diff(DD(ixx,:))./diff(TT(ixx,:)) 0];
                             %VV(ixx,isnan(VV(ixx,:))) = 0;
 
-                            % Not important if gamma = 0
-                            if gamma ~= 0
+                            % Not important if Gamma = 0
+                            if Gamma ~= 0
                                 FRI = FRy(ixx,samplepoints)';
                                 FII = FIy(ixx,samplepoints)';
                                 DDy(ixx,:) = interp1q(tsave(samplepoints)',FRI,TTI(:,ixx))...
@@ -553,7 +553,7 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow_continue(prefix, ...
                     InjectMaSave = InjectMaSave(:, 1:runnerplot - 1); 
 
                     % Filename reflects fract number and parallelization
-                    filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_pControl_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_pControl_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_Gamma_', num2str(Gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -564,7 +564,7 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow_continue(prefix, ...
                     save(filename);
 
                     % Write changable parameters into a '.txt' file
-                    txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_pControl_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
+                    txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_pControl_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_Gamma_', num2str(Gamma),...
                                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
 
@@ -574,7 +574,7 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow_continue(prefix, ...
                     fprintf(fileID, '\n%25s', 'NT: '); fprintf(fileID, num2str(NT));
                     fprintf(fileID, '\n%25s', 'lhs, rhs: '); 
                     fprintf(fileID, strcat(num2str(lhs), ', ', num2str(rhs))); 
-                    fprintf(fileID, '\n%25s', 'Gamma: '); fprintf(fileID, num2str(gamma));
+                    fprintf(fileID, '\n%25s', 'Gamma: '); fprintf(fileID, num2str(Gamma));
                     fprintf(fileID, '\n%25s', 'a, b: '); 
                     fprintf(fileID, strcat(num2str(a(1)), ', ', num2str(b(1)))); 
                     fprintf(fileID, '\n%25s', 'Terminated Slip rate: '); fprintf(fileID, num2str(Terminating_slip_rate));
@@ -585,7 +585,7 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow_continue(prefix, ...
                     fprintf(fileID, '\n%25s', 'c:'); fprintf(fileID, num2str(c));
                     fclose(fileID);
                     disp('NaN detected in V!');
-                    disp(strcat('Gamma = ', num2str(gamma)));
+                    disp(strcat('Gamma = ', num2str(Gamma)));
                     return;
                 end
                 t = t + dt;
@@ -626,7 +626,7 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow_continue(prefix, ...
     
     % Filename reflects fract number and parallelization
     % Filename reflects fract number and parallelization
-    filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_pControl_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    filename = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_pControl_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_Gamma_', num2str(Gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.mat');
 
@@ -637,7 +637,7 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow_continue(prefix, ...
     save(filename);
     
     % Write changable parameters into a '.txt' file
-    txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_pControl_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_gamma_', num2str(gamma),...
+    txtname = strcat('../outputMats/', 'Elastic_Flag', num2str(Elastic_Flag), '_pControl_NewFH_', num2str(FHFlag), '_nu_nuu_', num2str(nu), '_',  num2str(nuu), '_Gamma_', num2str(Gamma),...
                       '_pflag_', num2str(poreflag),'_c_', num2str(cc), '_factors_', ...
                       num2str(factors(1)), '_', num2str(factors(2)), '_',num2str(factors(3)),'.txt');
     
@@ -647,7 +647,7 @@ function Rc_diffusion_factors_p_control_elastic_1_narrow_continue(prefix, ...
     fprintf(fileID, '\n%25s', 'NT: '); fprintf(fileID, num2str(NT));
     fprintf(fileID, '\n%25s', 'lhs, rhs: '); 
     fprintf(fileID, strcat(num2str(lhs), ', ', num2str(rhs))); 
-    fprintf(fileID, '\n%25s', 'Gamma: '); fprintf(fileID, num2str(gamma));
+    fprintf(fileID, '\n%25s', 'Gamma: '); fprintf(fileID, num2str(Gamma));
     fprintf(fileID, '\n%25s', 'a, b: '); 
     fprintf(fileID, strcat(num2str(a(1)), ', ', num2str(b(1)))); 
     fprintf(fileID, '\n%25s', 'Terminated Slip rate: '); fprintf(fileID, num2str(Terminating_slip_rate));
