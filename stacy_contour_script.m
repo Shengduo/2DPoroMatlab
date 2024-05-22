@@ -250,11 +250,12 @@ files = ["NewFH_0_nuu_0.242_gamma_0_pflag_3_c_4e-07_factor_1_BC_0.16586_3.297e-0
 %% Keeping c for poroelastic, elastic, with narrower extent
 files = ["Elastic_Flag0_pControl_NewFH_0_nu_nuu_0.24_0.35_gamma_0_pflag_3_c_1e-08_factors_0.0001_1_1", ...
          "Elastic_Flag2_pControl_NewFH_0_nu_nuu_0.24_0.24_gamma_0_pflag_3_c_1e-08_factors_0.0001_1_1", ...
-         "Elastic_Flag2_pControl_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_0.0001_1_1"];
-BigTs = [2000, 2000, 2000]; 
-narrow_flags = [1, 1, 1];
+         "Elastic_Flag2_pControl_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_0.0001_1_1", ...
+         "Elastic_Flag2_FluxTime_0.0001_NewFH_0_nu_nuu_0.35_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_4080"];
+BigTs = [2000, 2000, 2000, 4000]; 
+narrow_flags = [1, 1, 1, 0];
 
-selected_to_plot = [1, 2, 3];
+selected_to_plot = [4];
 BigTs = BigTs(selected_to_plot);
 files = files(selected_to_plot);
 narrow_flags = narrow_flags(selected_to_plot);
