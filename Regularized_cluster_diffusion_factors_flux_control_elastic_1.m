@@ -139,7 +139,7 @@ function Regularized_cluster_diffusion_factors_flux_control_elastic_1(Nuu, Nu, .
     MAXNS = inf; %maximum number of timesteps needed for a kernel update
     % This limit may be reached if slip speed is high
     NS = 10; %gets changed, just to initialize and allowcate imperfectly
-    NSplot = 1; % 10;
+    NSplot = 10; % 10;
     %should here represent the average NS in the simulation.
     CNS = 1; % if larger than 1 the simulations may not fully resolve the shortest diffusion times, which typically depends on the
     %grid size, but will make them more efficient
