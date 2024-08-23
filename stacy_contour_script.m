@@ -260,24 +260,46 @@ BigTs = BigTs(selected_to_plot);
 files = files(selected_to_plot);
 narrow_flags = narrow_flags(selected_to_plot);
 
+%% Fault healing parametric study
+files = ["Elastic_Flag0_FluxTime_0.0001_NewFH_0_nu_nuu_0.24_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_2020_1000", ...
+         "Elastic_Flag0_FluxTime_0.0001_NewFH_0_nu_nuu_0.24_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_2020_1000000", ...
+         "Elastic_Flag0_FluxTime_0.0001_NewFH_0_nu_nuu_0.24_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1_2020_1000000000"]; 
+BigTs = [2000, 2000, 2000]; 
+narrow_flags = [0, 0, 0];
+
+selected_to_plot = [1, 2, 3];
+BigTs = BigTs(selected_to_plot);
+files = files(selected_to_plot);
+narrow_flags = narrow_flags(selected_to_plot);
+
+%% On fault healing
+files = ["Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1"];
+BigTs = [2000];
+narrow_flags = [0];
+
+selected_to_plot = [1];
+BigTs = BigTs(selected_to_plot);
+files = files(selected_to_plot);
+narrow_flags = narrow_flags(selected_to_plot);
+
 %% Westerly Granite
 % files = ["WesterlyGranite_gamma_0_pflag_3_kappacx_8.7584e-11"];
 % files = ["WesterlyGranite_Reverted_gamma_0_pflag_3_kappacx_8.7584e-15"];
 for iiii = 1:1:files.length()
     % files(iiii) = strcat('../outputMats/', files(iiii));
-    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0, narrow_flags(iiii));
-    close all;
-    % 
-    stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 1, narrow_flags(iiii));
-    close all;
-
-    % stacy_LnuVsPRegion(files(iiii), saveflag, 0, 1, BigTs(iiii));
+    % stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 0, narrow_flags(iiii));
     % close all;
+    % % 
+    % stacy_contours(files(iiii), saveflag, 0, 1, BigTs(iiii), 1, narrow_flags(iiii));
+    % close all;
+
+    stacy_LnuVsPRegion(files(iiii), saveflag, 0, 1, BigTs(iiii));
+    close all;
     % % stacy_contours_undim(files(iiii), saveflag, 0, 1);
     % % PlotLeaking(files(iiii));
     % % close all;
-    center_VPres(files(iiii), saveflag, BigTs(iiii));
-    close all;
+    % center_VPres(files(iiii), saveflag, BigTs(iiii));
+    % close all;
     % stacy_contours(files(iiii), saveflag, 1, 1);
     % close all;
 end

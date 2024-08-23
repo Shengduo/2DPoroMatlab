@@ -70,7 +70,8 @@ function stacy_LnuVsPRegion(prename, saveflag, pcflag, subtraction_flag, BigT)
         end
     end
 
-    plot_times = [500, 750, 1000, 1800] * floor(BigT / 2000);
+    % plot_times = [500, 750, 1000, 1800] * floor(BigT / 2000);
+    plot_times = [920, 926]; 
     %--------------------------------------------------------------------------
     % % First the color map
     [XX,YY] = meshgrid(tsaveplot, x);

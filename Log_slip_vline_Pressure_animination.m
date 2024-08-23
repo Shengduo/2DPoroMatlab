@@ -5,7 +5,9 @@ G = 1.0e10;
 % Objectname = "NewFH_0_nuu_0.262_gamma_0_pflag_3_c_3.7707e-07_factor_1";
 % Objectname = "NewFH_0_nuu_0.35_gamma_0_pflag_3_c_2.6982e-07_factor_1";
 % Objectname = 'Reduced_gamma_0_pflag_3_c_4e-07';
-Objectname = 'Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1';
+% Objectname = 'Flux_0.0001_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1';
+% Objectname = 'FluxTime_7.5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1';
+Objectname = 'FluxTime_5e-05_NewFH_0_nuu_0.35_gamma_0_pflag_3_c_1e-08_factors_1_1_1';
 V_dyn = 1;
 
 % wide flag, trange
@@ -24,11 +26,14 @@ end
 
 % Set T ticks and range
 Yticks = 0:800:2400;
-Trange = [0, 2000];
+Trange = [0, 4000];
+
+% Yticks = 920:5:930;
+% Trange = [920, 930];
 
 % Initialize names
 filename = strcat('../outputMats/', Objectname, '.mat');
-videoname = strcat(Objectname, '_logVP_withDim_wide_', num2str(wideflag), '.mp4');
+videoname = strcat(Objectname, '_logVP_withDim_wide_closeTime_', num2str(wideflag), '.mp4');
 
 % Initialize video
 myVideo = VideoWriter(strcat('../mp4files/', videoname), 'MPEG-4');
@@ -38,7 +43,7 @@ open(myVideo);
 
 % Load .mat file
 load(filename);
-tmax = 2000;
+tmax = Trange(2);
 si0 = 4.0e6;
 ind = find(tsaveplot > tmax);
 psave = psave(:, 1:ind(1));
